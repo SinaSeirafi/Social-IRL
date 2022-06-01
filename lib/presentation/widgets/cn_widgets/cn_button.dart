@@ -13,6 +13,8 @@ class CnButton extends StatelessWidget {
     this.active = true,
     this.loading = false,
     this.size,
+    this.fullWidth = false,
+    this.width,
   }) : super(key: key);
 
   final String title;
@@ -22,7 +24,9 @@ class CnButton extends StatelessWidget {
   final bool active;
   final bool loading;
 
+  final bool fullWidth;
   final Size? size;
+  final double? width;
 
   static double buttonHeight = 50;
   static double buttonWidth = deviceWidth / 1.2;
@@ -33,7 +37,7 @@ class CnButton extends StatelessWidget {
       child: _buildChild(),
       onPressed: () => onPressed(),
       style: ElevatedButton.styleFrom(
-        fixedSize: size ?? Size(buttonWidth, buttonHeight),
+        fixedSize: _size,
         primary: color ?? defaultButtonColor,
         onSurface: defaultDisabledButtonColor,
       ),
@@ -44,5 +48,15 @@ class CnButton extends StatelessWidget {
     if (loading) return const CnDottedLoadingAnimation();
 
     return CnText(title, color: defaultTextColor);
+  }
+
+  Size? get _size {
+    if (size != null) return size!;
+
+    if (fullWidth) return Size(buttonWidth, buttonHeight);
+
+    if (width != null) return Size(width!, buttonHeight);
+
+    return null;
   }
 }

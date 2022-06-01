@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_irl/core/app_router.dart';
 import 'package:social_irl/domain/entities/person.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,13 +24,25 @@ class PersonCard extends StatelessWidget {
       key: Key(person.id.toString()),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) => _confirmDelete(context),
-      child: Card(
-        child: ListTile(
-          leading: _buildSocialCircle(),
-          title: Text(person.name),
-          subtitle: _buildSubtitle(),
+      child: InkWell(
+        onTap: () => _navigateToEditPage(context),
+        child: Card(
+          child: ListTile(
+            leading: _buildSocialCircle(),
+            title: Text(person.name),
+            subtitle: _buildSubtitle(),
+          ),
         ),
       ),
+    );
+  }
+
+  _navigateToEditPage(BuildContext context) {
+    selectedPerson = person;
+
+    router.navigateTo(
+      context,
+      CnRouter.editPersonRoute + '/${person.id}',
     );
   }
 

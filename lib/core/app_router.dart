@@ -1,10 +1,12 @@
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/presentation/pages/home_page.dart';
 import 'package:social_irl/presentation/pages/person_add_edit_page.dart';
+import 'package:social_irl/presentation/pages/social_events_add_edit_page.dart';
 
 // import 'app_constants.dart';
-// import 'cn_helper.dart';
+import 'cn_helper.dart';
 
 // ----- Router and navigation
 CnRouter _cnRouter = CnRouter.instance;
@@ -38,27 +40,42 @@ class CnRouter {
 
     _myRoutes.forEach((route, page) => routeMaker(route, page));
 
-    // router.define(
-    //   '$editQuestionRoute/:id',
-    //   transitionType: defaultTransition,
-    //   handler: Handler(handlerFunc:
-    //       (material.BuildContext? context, Map<String, dynamic> params) {
-    //     if (selectedQuestion == null) throw "Null Selected Question";
+    router.define(
+      '$editPersonRoute/:id',
+      transitionType: defaultTransition,
+      handler: Handler(handlerFunc:
+          (material.BuildContext? context, Map<String, dynamic> params) {
+        if (selectedPerson == null) throw "Null Selected Person";
 
-    //     if (selectedQuestion!.id != _retrieveId(params)) {
-    //       throw "Selected Question not set correctly";
-    //     }
+        if (selectedPerson!.id != _retrieveId(params)) {
+          throw "Selected Person not set correctly";
+        }
 
-    //     return QuestionAddEditPage(question: selectedQuestion);
-    //   }),
-    // );
+        return PersonAddEditPage(person: selectedPerson);
+      }),
+    );
+
+    router.define(
+      '$editSocialEventRoute/:id',
+      transitionType: defaultTransition,
+      handler: Handler(handlerFunc:
+          (material.BuildContext? context, Map<String, dynamic> params) {
+        if (selectedSocialEvent == null) throw "Null Selected Social Event";
+
+        if (selectedSocialEvent!.id != _retrieveId(params)) {
+          throw "Selected Social Event not set correctly";
+        }
+
+        return SocialEventAddEditPage(socialEvent: selectedSocialEvent);
+      }),
+    );
   }
 
   // --- Dynamic Routes
   static const String editPersonRoute = '/editPerson';
   static const String addPersonRoute = '/addPerson';
-  static const String editEventRoute = '/editEvent';
-  static const String addEventRoute = '/addEvent';
+  static const String editSocialEventRoute = '/editEvent';
+  static const String addSocialEventRoute = '/addEvent';
 
   // --- Static Routes
   static const String homePageRoute = '/home';
@@ -69,6 +86,7 @@ class CnRouter {
   final Map<String, material.Widget> _myRoutes = {
     homePageRoute: const HomePage(),
     addPersonRoute: const PersonAddEditPage(),
+    addSocialEventRoute: const SocialEventAddEditPage(),
     // addQuestionRoute: const QuestionAddEditPage(),
     // splashScreenRoute: const SplashScreenPage(),
     // onBoardingRoute: const OnBoardingPage(),
@@ -76,4 +94,4 @@ class CnRouter {
   };
 }
 
-// int _retrieveId(Map<String, dynamic> params) => h.intOk(params['id'][0])!;
+int _retrieveId(Map<String, dynamic> params) => h.intOk(params['id'][0])!;

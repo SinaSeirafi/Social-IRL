@@ -12,7 +12,7 @@ class CnTextFieldAndHeader extends StatefulWidget {
     // For text form field
     required this.controller,
     this.onFieldSubmitted,
-    this.textInputAction,
+    this.textInputAction = TextInputAction.next,
     this.maxLines = 1,
     this.hintText,
     this.padding = const EdgeInsets.only(

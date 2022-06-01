@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/core/cn_helper.dart';
 
+import '../../core/app_router.dart';
 import '../../domain/entities/social_event.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +24,24 @@ class SocialEventCard extends StatelessWidget {
       key: Key(socialEvent.id.toString()),
       direction: DismissDirection.endToStart,
       confirmDismiss: (_) => _confirmDelete(context),
-      child: Card(
-        child: ListTile(
-          title: _buildTitle(),
-          subtitle: _buildSubtitle(),
+      child: InkWell(
+        onTap: () => _navigateToEditPage(context),
+        child: Card(
+          child: ListTile(
+            title: _buildTitle(),
+            subtitle: _buildSubtitle(),
+          ),
         ),
       ),
+    );
+  }
+
+  _navigateToEditPage(BuildContext context) {
+    selectedSocialEvent = socialEvent;
+
+    router.navigateTo(
+      context,
+      CnRouter.editSocialEventRoute + '/${socialEvent.id}',
     );
   }
 
@@ -56,9 +70,9 @@ class SocialEventCard extends StatelessWidget {
 
     bool result = await showCnConfirmationModalBottomSheet(
       context,
-      child: const Text(
-        "Are you sure you want to delete this person?",
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+      child: Text(
+        "Are you sure you want to delete this event?",
+        style: TextStyle(color: accentColor, fontWeight: FontWeight.w500),
       ),
       confirmButtonAction: _removeQuestion,
     );

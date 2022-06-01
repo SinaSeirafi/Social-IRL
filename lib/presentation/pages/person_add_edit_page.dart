@@ -5,8 +5,9 @@ import 'package:social_irl/core/app_constants.dart';
 import '../../domain/entities/person.dart';
 import '../bloc/person_bloc.dart';
 import '../widgets/cn_widgets/cn_button.dart';
-import '../widgets/cn_widgets/cn_text.dart';
+
 import '../widgets/cn_widgets/cn_textformfield.dart';
+import '../widgets/notes_suggester.dart';
 
 class PersonAddEditPage extends StatefulWidget {
   const PersonAddEditPage({
@@ -27,6 +28,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
   final _formKey = GlobalKey<FormState>();
   final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _notesFocusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +41,9 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
             Expanded(
               child: ListView(
                 children: [
-                  CnTextFieldAndHeader(
-                    title: "Name",
-                    controller: _nameController,
-                    focusNode: _nameFocusNode,
-                    textInputAction: TextInputAction.done,
-                    onFieldSubmitted: _submitForm,
-                    required: true,
-                  ),
+                  _buildNameTextField(),
+                  _buildNotesTextField(),
+                  _buildNoteSuggestions(),
                 ],
               ),
             ),
@@ -54,8 +51,34 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
           ],
         ),
       ),
+    );
+  }
 
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+  CnTextFieldAndHeader _buildNameTextField() {
+    return CnTextFieldAndHeader(
+      title: "Name",
+      controller: _nameController,
+      focusNode: _nameFocusNode,
+      required: true,
+    );
+  }
+
+  Widget _buildNoteSuggestions() {
+    return NotesSuggestor(
+      mode: NoteMode.person,
+      focusNode: _notesFocusNode,
+      controller: _notesController,
+    );
+  }
+
+  CnTextFieldAndHeader _buildNotesTextField() {
+    return CnTextFieldAndHeader(
+      title: "Notes",
+      controller: _notesController,
+      focusNode: _notesFocusNode,
+      maxLines: 3,
+      textInputAction: TextInputAction.done,
+      onFieldSubmitted: _submitForm,
     );
   }
 
@@ -63,7 +86,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: CnText(editMode ? person.name : "Add Person"),
+      title: Text(editMode ? person.name : "Add Person"),
     );
   }
 
@@ -71,6 +94,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     return SafeArea(
       child: CnButton(
         title: "Save",
+        fullWidth: true,
         onPressed: _submitForm,
       ),
     );

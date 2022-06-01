@@ -33,6 +33,12 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.grey,
         ),
         home: const SplashScreenPage(),
+        onGenerateRoute: router.generator,
+        onUnknownRoute: (RouteSettings settings) {
+          return MaterialPageRoute(
+            builder: (context) => const Center(child: Text("Unknown Route")),
+          );
+        },
       ),
     );
   }

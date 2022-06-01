@@ -1,11 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:social_irl/domain/usecases/person_usecases.dart';
 
+import '../../core/extract_data_from_notes.dart';
 import '../../core/failures.dart';
 import '../../core/usecases.dart';
 import '../../data/repositories/social_event_repository.dart';
+import '../../presentation/widgets/notes_suggester.dart';
 import '../entities/social_event.dart';
+import '../entities/tag.dart';
+import 'person_usecases.dart';
 
 abstract class SocialEventUseCase<Type, Params> {
   Future<Either<Failure, Type>> call(Params params);
@@ -74,5 +77,30 @@ class RemoveSocialEventUsecase
     params.socialEvent.isDeleted = true;
 
     return await _repository.deleteSocialEvent(params.socialEvent);
+  }
+}
+
+class SocialEventGeneralUsecases {
+  static void copyDataFromSocialEvent(SocialEvent source, SocialEvent target) {
+    target.title = source.title;
+    target.startDate = source.startDate;
+    target.endDate = source.endDate;
+    target.attendees = source.attendees;
+    target.notes = source.notes;
+    target.tags = source.tags;
+    target.isDeleted = source.isDeleted;
+    target.createdAt = source.createdAt;
+    target.modifiedAt = source.modifiedAt;
+  }
+
+  static void setSocialEventTagsBasedOnNotes(SocialEvent socialEvent) {
+    socialEvent.tags = [];
+
+    List<String> tagStrings =
+        extractDataFromNotes(socialEvent.notes, tagPattern);
+
+    for (var item in tagStrings) {
+      socialEvent.tags.add(SocialEventTag(id: 0, title: item));
+    }
   }
 }

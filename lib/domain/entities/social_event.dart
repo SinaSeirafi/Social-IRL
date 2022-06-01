@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:social_irl/domain/entities/person.dart';
 import 'package:social_irl/domain/entities/tag.dart';
 
+import '../usecases/social_event_usecases.dart';
+
 class SocialEvent extends Equatable {
   final int id;
   String? title;
@@ -11,8 +13,8 @@ class SocialEvent extends Equatable {
 
   List<Person> attendees;
 
-  String? note;
-  List<SocialEventTag>? tags;
+  String? notes;
+  late List<SocialEventTag> tags;
 
   bool isDeleted = false;
 
@@ -25,10 +27,10 @@ class SocialEvent extends Equatable {
     required this.startDate,
     this.endDate,
     required this.attendees,
-    this.note,
-    this.tags,
+    this.notes,
   }) {
     createdAt = modifiedAt = DateTime.now();
+    tags = [];
   }
 
   @override
@@ -38,10 +40,13 @@ class SocialEvent extends Equatable {
         startDate,
         endDate,
         attendees,
-        note,
+        notes,
         tags,
         isDeleted,
         createdAt,
         modifiedAt
       ];
+
+  void copyDataFromSocialEvent(SocialEvent socialEvent) =>
+      SocialEventGeneralUsecases.copyDataFromSocialEvent(socialEvent, this);
 }

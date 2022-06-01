@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:social_irl/core/app_router.dart';
-import 'package:social_irl/data/datasources/dummyData.dart';
-import 'package:social_irl/domain/entities/social_event.dart';
-import 'package:social_irl/presentation/bloc/person_bloc.dart';
-import 'package:social_irl/presentation/bloc/social_event_bloc.dart';
-import 'package:social_irl/presentation/pages/social_events_page.dart';
-import 'package:social_irl/presentation/pages/people_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../core/app_constants.dart';
+import '../../core/app_router.dart';
 import '../widgets/fab_buttom_app_bar.dart';
+import 'people_page.dart';
+import 'social_events_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,6 +17,13 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        centerTitle: false,
+        title: Text(_pages[_selectedTab].text),
+      ),
       body: _pages[_selectedTab].page,
       bottomNavigationBar: _buildButtomNavBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -53,23 +55,12 @@ class _HomePageState extends State<HomePage> {
         color: accentColor,
       ),
       onPressed: () {
-        if (_selectedTab == 0) {
-          router.navigateTo(context, CnRouter.addPersonRoute);
-
-          // context.read<PersonBloc>().add(AddPersonEvent(dummyPerson3));
-        } else {
-          final state = context.read<PersonBloc>().state as PersonLoaded;
-
-          context.read<SocialEventBloc>().add(AddSocialEventEvent(SocialEvent(
-                id: DateTime.now().millisecondsSinceEpoch,
-                startDate: DateTime.now(),
-                attendees: [state.persons.last],
-              )));
-        }
-
-        setState(() {});
-
-        // Navigate to add page
+        router.navigateTo(
+          context,
+          _selectedTab == 0
+              ? CnRouter.addPersonRoute
+              : CnRouter.addSocialEventRoute,
+        );
       },
     );
   }

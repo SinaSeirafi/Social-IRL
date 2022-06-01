@@ -1,5 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/extract_data_from_notes.dart';
+import 'package:social_irl/domain/entities/tag.dart';
+import 'package:social_irl/presentation/widgets/notes_suggester.dart';
 
 import '../../core/failures.dart';
 import '../../core/usecases.dart';
@@ -71,5 +74,15 @@ class PersonGeneralUsecases {
     target.isDeleted = source.isDeleted;
     target.createdAt = source.createdAt;
     target.modifiedAt = source.modifiedAt;
+  }
+
+  static void setPersonTagsBasedOnNotes(Person person) {
+    person.tags = [];
+
+    List<String> tagStrings = extractDataFromNotes(person.notes, tagPattern);
+
+    for (var item in tagStrings) {
+      person.tags.add(PersonTag(id: 0, title: item));
+    }
   }
 }

@@ -15,7 +15,7 @@ class Person extends Equatable {
   SocialCircle? potentialForCircle;
 
   String? notes;
-  List<PersonTag>? tags;
+  late List<PersonTag> tags;
 
   late List<SocialEvent> socialEvents;
 
@@ -31,10 +31,10 @@ class Person extends Equatable {
     this.socialCircle,
     this.potentialForCircle,
     this.notes,
-    this.tags,
   }) {
     createdAt = modifiedAt = DateTime.now();
     socialEvents = [];
+    tags = [];
   }
 
   @override
