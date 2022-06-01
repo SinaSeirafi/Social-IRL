@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/core/extract_data_from_notes.dart';
 import 'package:social_irl/domain/entities/tag.dart';
 import 'package:social_irl/presentation/widgets/notes_suggester.dart';
@@ -84,7 +85,10 @@ class PersonGeneralUsecases {
     for (var item in tagStrings) {
       if (item.isEmpty) continue;
 
-      person.tags.add(PersonTag(id: 0, title: item));
+      PersonTag tag = PersonTag(id: 0, title: item);
+
+      person.tags.add(tag);
+      allPersonTags.add(tag);
     }
   }
 }

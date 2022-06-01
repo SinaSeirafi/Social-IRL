@@ -34,7 +34,7 @@ class PersonCard extends StatelessWidget {
           margin: noTopPadding,
           child: ListTile(
             leading: _buildSocialCircle(),
-            title: CnTitle(person.name),
+            title: CnTitle(person.name, hasPadding: false),
             subtitle: _buildSubtitle(context),
           ),
         ),
@@ -69,9 +69,6 @@ class PersonCard extends StatelessWidget {
   }
 
   _buildSocialCircle() {
-    String text =
-        person.socialCircle == null ? "🤷🏻‍♂️" : person.socialCircle!.title;
-
     const double size = 30;
 
     return Container(
@@ -84,7 +81,10 @@ class PersonCard extends StatelessWidget {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.only(bottom: 3.0),
-          child: CnText(text),
+          child: CnTitle(
+            person.socialCircle.title,
+            hasPadding: false,
+          ),
         ),
       ),
     );

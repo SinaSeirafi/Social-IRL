@@ -53,7 +53,8 @@ class CnButton extends StatelessWidget {
   Widget _buildChild() {
     if (loading) return const CnDottedLoadingAnimation();
 
-    if (largeTitle) return CnTitle(title, color: defaultTextColor);
+    if (largeTitle)
+      return CnTitle(title, color: defaultTextColor, hasPadding: false);
 
     return CnText(title, color: defaultTextColor);
   }

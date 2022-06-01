@@ -90,6 +90,9 @@ class CnTitle extends StatelessWidget {
   final bool localize;
   final int maxLines;
 
+  final bool hasPadding;
+  final EdgeInsetsGeometry padding;
+
   const CnTitle(
     this.title, {
     Key? key,
@@ -100,19 +103,24 @@ class CnTitle extends StatelessWidget {
     this.shadows,
     this.localize = false,
     this.maxLines = 1,
+    this.padding = const EdgeInsets.only(left: defaultPadding),
+    this.hasPadding = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return CnText(
-      title,
-      upperCase: upperCase,
-      fontSize: fontSize,
-      color: color ?? defaultTextColor,
-      isBold: isBold,
-      shadows: shadows,
-      localize: localize,
-      maxLines: maxLines,
+    return Padding(
+      padding: hasPadding ? padding : EdgeInsets.zero,
+      child: CnText(
+        title,
+        upperCase: upperCase,
+        fontSize: fontSize,
+        color: color ?? defaultTextColor,
+        isBold: isBold,
+        shadows: shadows,
+        localize: localize,
+        maxLines: maxLines,
+      ),
     );
   }
 }

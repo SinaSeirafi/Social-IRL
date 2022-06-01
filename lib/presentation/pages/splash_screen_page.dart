@@ -160,7 +160,7 @@ class AppLogoAndName extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.question_mark_rounded,
+            Icons.people_alt,
             size: 40,
             color: elementsColor,
           ),

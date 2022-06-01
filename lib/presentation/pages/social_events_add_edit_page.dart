@@ -1,20 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_irl/core/app_constants.dart';
-import 'package:social_irl/domain/entities/person.dart';
-import 'package:social_irl/domain/usecases/social_event_usecases.dart';
-import 'package:social_irl/presentation/bloc/person_bloc.dart';
-import 'package:social_irl/presentation/widgets/cn_widgets/cn_message.dart';
-import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
-import 'package:social_irl/presentation/widgets/notes_suggester.dart';
 
-import '../../core/extract_data_from_notes.dart';
+import '../../core/app_constants.dart';
+import '../../domain/entities/person.dart';
 import '../../domain/entities/social_event.dart';
-
+import '../../domain/usecases/social_event_usecases.dart';
+import '../bloc/person_bloc.dart';
 import '../bloc/social_event_bloc.dart';
 import '../widgets/cn_widgets/cn_button.dart';
+import '../widgets/cn_widgets/cn_message.dart';
+import '../widgets/cn_widgets/cn_text.dart';
 import '../widgets/cn_widgets/cn_textformfield.dart';
+import '../widgets/notes_suggester.dart';
 
 class SocialEventAddEditPage extends StatefulWidget {
   const SocialEventAddEditPage({
@@ -69,17 +67,17 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   _buildTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(left: defaultPadding),
-      child: CnTitle(title),
+      child: CnTitle(title, hasPadding: false),
     );
   }
 
   Widget _buildNoteAttendeesSuggestions() {
-    List<String> suggestions = [];
+    Set<String> suggestions = {};
 
     final state = context.read<PersonBloc>().state as PersonLoaded;
 
     for (var person in state.persons) {
-      suggestions.add(person.name);
+      suggestions.add(person.name.replaceAll(" ", "_"));
     }
 
     return NotesSuggestor(
@@ -91,10 +89,11 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   }
 
   Widget _buildNoteTagsSuggestions() {
-    const List<String> socialDefaultTagSuggestions = [
-      "Meet",
-      "Call",
-    ];
+    Set<String> socialDefaultTagSuggestions = {"Meet", "Call"};
+
+    for (var element in allSocialEventTags) {
+      socialDefaultTagSuggestions.add(element.title);
+    }
 
     return NotesSuggestor(
       mode: SuggestionMode.tag,
@@ -225,8 +224,8 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   void _setFieldValuesBasedOnInputSocialEvent() {
     socialEvent.copyDataFromSocialEvent(widget.socialEvent!);
 
-    _titleController.text = socialEvent.title ?? "";
-    _notesController.text = socialEvent.notes ?? "";
+    _titleController.text = socialEvent.title;
+    _notesController.text = socialEvent.notes;
 
     _attendees = socialEvent.attendees;
   }

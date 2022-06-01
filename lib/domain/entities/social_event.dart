@@ -6,14 +6,14 @@ import '../usecases/social_event_usecases.dart';
 
 class SocialEvent extends Equatable {
   final int id;
-  String? title;
+  String title;
 
   DateTime startDate;
   DateTime? endDate;
 
   List<Person> attendees;
 
-  String? notes;
+  String notes;
   late List<SocialEventTag> tags;
 
   bool isDeleted = false;
@@ -23,11 +23,11 @@ class SocialEvent extends Equatable {
 
   SocialEvent({
     required this.id,
-    this.title,
+    this.title = "",
     required this.startDate,
     this.endDate,
     required this.attendees,
-    this.notes,
+    this.notes = "",
   }) {
     createdAt = modifiedAt = DateTime.now();
     tags = [];

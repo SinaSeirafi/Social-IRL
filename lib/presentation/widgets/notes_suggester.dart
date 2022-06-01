@@ -27,7 +27,7 @@ class NotesSuggestor extends StatelessWidget {
   final SuggestionMode mode;
   final FocusNode focusNode;
   final TextEditingController controller;
-  final List<String> suggestions;
+  final Set<String> suggestions;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class NotesSuggestor extends StatelessWidget {
       stream: streamController.stream,
       builder: (context, snapshot) {
         return Padding(
-          padding: const EdgeInsets.all(defaultPadding),
+          padding: noTopPadding,
           child: Wrap(
             spacing: defaultPadding,
             runSpacing: 10,
@@ -82,7 +82,7 @@ class NotesSuggestor extends StatelessWidget {
     return CnButton(
       title: title,
       largeTitle: false,
-      color: used ? Colors.blueGrey.shade100 : primaryColor,
+      color: used ? selectedItemColor : primaryColor,
       // color: used ? accentColor.withOpacity(0.3) : primaryColor,
       onPressed: used ? _removeFromText : _addToText,
     );

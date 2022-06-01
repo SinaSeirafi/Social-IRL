@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_irl/core/app_constants.dart';
 
 import '../../core/extract_data_from_notes.dart';
 import '../../core/failures.dart';
@@ -107,7 +108,10 @@ class SocialEventGeneralUsecases {
     for (var item in tagStrings) {
       if (item.isEmpty) continue;
 
-      socialEvent.tags.add(SocialEventTag(id: 0, title: item));
+      SocialEventTag tag = SocialEventTag(id: 0, title: item);
+
+      socialEvent.tags.add(tag);
+      allSocialEventTags.add(tag);
     }
   }
 
@@ -128,6 +132,8 @@ class SocialEventGeneralUsecases {
 
     // Checking each entry
     for (var item in attendeesString) {
+      item = item.replaceAll("_", " ");
+
       if (item.isEmpty) continue;
 
       // is .any() and .firstWhere() faster than this?

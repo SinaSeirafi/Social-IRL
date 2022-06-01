@@ -6,8 +6,8 @@ import 'package:social_irl/core/cn_helper.dart';
 import '../../core/app_constants.dart';
 import '../../core/app_router.dart';
 import '../widgets/fab_buttom_app_bar.dart';
-import 'people_page.dart';
-import 'social_events_page.dart';
+import 'person_list_page.dart';
+import 'social_events_list_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,13 +19,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    controller.addListener(() => streamController.add(controller.page));
+    controller.addListener(() => streamController.add(controller.page ?? 0.0));
 
-    return StreamBuilder(
+    return StreamBuilder<double>(
       stream: streamController.stream,
       initialData: 0,
       builder: (context, snapshot) {
-        int _selectedTab = h.roundToInt(controller.page ?? 0.0)!;
+        int _selectedTab = h.roundToInt(snapshot.data ?? 0.0)!;
 
         return Scaffold(
           appBar: AppBar(
@@ -50,12 +50,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  final StreamController streamController = StreamController();
+  final StreamController<double> streamController = StreamController<double>();
 
   _selectTab(int index) {
     controller.animateToPage(
       index,
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 300),
       curve: Curves.fastOutSlowIn,
     );
   }

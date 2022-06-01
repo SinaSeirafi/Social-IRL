@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_irl/core/app_constants.dart';
+import 'package:social_irl/core/cn_helper.dart';
+import 'package:social_irl/data/datasources/dummyData.dart';
 import 'package:social_irl/domain/usecases/person_usecases.dart';
+import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
 
 import '../../domain/entities/person.dart';
 import '../bloc/person_bloc.dart';
@@ -44,6 +47,9 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
                 children: [
                   _buildNameTextField(),
                   _buildNotesTextField(),
+                  _buildTitle("Circle"),
+                  _buildSocialCircle(),
+                  _buildTitle("Tags"),
                   _buildNoteSuggestions(),
                 ],
               ),
@@ -52,6 +58,21 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNoteSuggestions() {
+    Set<String> personDefaultTagSuggestions = {};
+
+    for (var element in allPersonTags) {
+      personDefaultTagSuggestions.add(element.title);
+    }
+
+    return NotesSuggestor(
+      suggestions: personDefaultTagSuggestions,
+      mode: SuggestionMode.tag,
+      focusNode: _notesFocusNode,
+      controller: _notesController,
     );
   }
 
@@ -64,14 +85,45 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     );
   }
 
-  Widget _buildNoteSuggestions() {
-    const List<String> personDefaultTagSuggestions = [];
+  double _socialCircleValue = 0;
 
-    return NotesSuggestor(
-      suggestions: personDefaultTagSuggestions,
-      mode: SuggestionMode.tag,
-      focusNode: _notesFocusNode,
-      controller: _notesController,
+  _buildSocialCircle() {
+    double _sliderMaxValue = allSocialCircles.length - 1;
+
+    String label = allSocialCircles[h.roundToInt(_socialCircleValue)!].title;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+      child: Wrap(
+        spacing: defaultPadding,
+        runSpacing: 5,
+        children: [
+          for (var circle in allSocialCircles)
+            CnButton(
+              color: person.socialCircle == circle
+                  ? selectedItemColor
+                  : primaryColor,
+              onPressed: () {
+                setState(() {
+                  person.socialCircle = circle;
+                });
+              },
+              title: circle.title,
+            ),
+        ],
+      ),
+    );
+
+    return Slider(
+      value: _socialCircleValue,
+      max: _sliderMaxValue,
+      divisions: _sliderMaxValue.toInt(),
+      label: label,
+      onChanged: (value) {
+        setState(() {
+          _socialCircleValue = value;
+        });
+      },
     );
   }
 
@@ -84,6 +136,10 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
       textInputAction: TextInputAction.done,
       onFieldSubmitted: _submitForm,
     );
+  }
+
+  _buildTitle(String title) {
+    return CnTitle(title);
   }
 
   AppBar _buildAppBar() {
@@ -114,6 +170,8 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     person.notes = _notesController.text;
 
     PersonGeneralUsecases.setPersonTagsBasedOnNotes(person);
+
+    person.socialCircle = allSocialCircles[_socialCircleValue.toInt()];
 
     if (editMode) {
       // Updating the data from temp
@@ -155,6 +213,8 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
     _nameController.text = person.name;
     _notesController.text = person.notes ?? "";
+
+    _socialCircleValue = person.socialCircle.id.toDouble();
   }
 
   @override
@@ -164,6 +224,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     person = Person(
       id: DateTime.now().millisecondsSinceEpoch,
       name: "",
+      socialCircle: allSocialCircles.first,
     );
 
     if (editMode) _setFieldValuesBasedOnInputPerson();

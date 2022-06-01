@@ -26,10 +26,19 @@ Person dummyPerson4 = Person(
   socialCircle: dummySocialCircle2,
 );
 
-SocialCircle dummySocialCircle1 = const SocialCircle(id: 1, title: "1");
-SocialCircle dummySocialCircle2 = const SocialCircle(id: 2, title: "2");
-SocialCircle dummySocialCircle3 = const SocialCircle(id: 3, title: "3");
-SocialCircle dummySocialCircle4 = const SocialCircle(id: 4, title: "4");
+List<SocialCircle> allSocialCircles = const [
+  dummySocialCircle0,
+  dummySocialCircle1,
+  dummySocialCircle2,
+  dummySocialCircle3,
+  dummySocialCircle4,
+];
+
+const SocialCircle dummySocialCircle0 = SocialCircle(id: 0, title: "❤️");
+const SocialCircle dummySocialCircle1 = SocialCircle(id: 1, title: "😍");
+const SocialCircle dummySocialCircle2 = SocialCircle(id: 2, title: "🥰");
+const SocialCircle dummySocialCircle3 = SocialCircle(id: 3, title: "🤗");
+const SocialCircle dummySocialCircle4 = SocialCircle(id: 4, title: "😊");
 
 PersonTag dummyPersonTag1 = const PersonTag(id: 1, title: "Uni");
 PersonTag dummyPersonTag2 = const PersonTag(id: 2, title: "Jung Class");

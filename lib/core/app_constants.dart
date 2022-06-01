@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_irl/domain/entities/tag.dart';
 
 import '../domain/entities/person.dart';
 import '../domain/entities/social_event.dart';
@@ -14,12 +15,19 @@ bool demoMode = false;
 Person? selectedPerson;
 SocialEvent? selectedSocialEvent;
 
+// feeling tired, might remove later
+Set<Person> allPersons = {};
+Set<SocialEvent> allSocialEvents = {};
+Set<PersonTag> allPersonTags = {};
+Set<SocialEventTag> allSocialEventTags = {};
+
 // ----- UI elements: Colors
 Color primaryColor = Colors.white;
 Color accentColor = Colors.black87;
 Color defaultButtonColor = Colors.white;
 Color defaultDisabledButtonColor = Colors.grey.shade200;
 const Color itemsColor = Colors.white;
+Color selectedItemColor = Colors.blueGrey.shade100;
 
 // ----- UI elements: Text
 TextDirection appTextDirection = TextDirection.ltr;

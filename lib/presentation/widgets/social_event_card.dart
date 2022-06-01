@@ -8,6 +8,7 @@ import '../../domain/entities/social_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/social_event_bloc.dart';
+import 'cn_widgets/cn_button.dart';
 import 'cn_widgets/cn_message.dart';
 import 'common_widgets.dart';
 
@@ -31,7 +32,7 @@ class SocialEventCard extends StatelessWidget {
           margin: noTopPadding,
           child: ListTile(
             title: _buildTitle(),
-            subtitle: _buildSubtitle(),
+            subtitle: _buildSubtitle(context),
           ),
         ),
       ),
@@ -48,20 +49,39 @@ class SocialEventCard extends StatelessWidget {
   }
 
   Widget _buildTitle() {
-    return Text(h.readableDateFromDateTime(socialEvent.startDate));
+    String text = h.readableDateFromDateTime(socialEvent.startDate);
+
+    if (socialEvent.title.isNotEmpty) text += " - " + socialEvent.title;
+
+    return Text(text);
   }
 
-  Widget _buildSubtitle() {
-    String text = 'Attendees: ';
-
-    for (var person in socialEvent.attendees) {
-      text += person.name + " ";
+  Widget _buildSubtitle(context) {
+    _buildAttendees() {
+      return Wrap(
+        spacing: 8,
+        children: [
+          for (var person in socialEvent.attendees)
+            CnButton(
+              elevation: 1,
+              title: person.name,
+              largeTitle: false,
+              onPressed: () {
+                // TODO: Filter based on person
+                showCnMessage(
+                  context,
+                  text: "Later on, will filter this page based on person",
+                );
+              },
+            ),
+        ],
+      );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(text),
+        _buildAttendees(),
         TagsInCardWrap(tags: socialEvent.tags),
       ],
     );

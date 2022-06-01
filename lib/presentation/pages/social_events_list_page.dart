@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_irl/presentation/widgets/cn_widgets/cn_animations.dart';
 import 'package:social_irl/presentation/widgets/social_event_card.dart';
 
 import '../bloc/social_event_bloc.dart';
@@ -17,6 +18,12 @@ class _SocialEventsListPageState extends State<SocialEventsListPage> {
     return BlocBuilder<SocialEventBloc, SocialEventState>(
       builder: (context, state) {
         if (state is SocialEventLoaded) {
+          if (state.events.isEmpty) {
+            return const Center(
+              child: Text("Add events with the button below"),
+            );
+          }
+
           return ListView(
             children: [
               for (var socialEvent in state.events)
@@ -25,8 +32,8 @@ class _SocialEventsListPageState extends State<SocialEventsListPage> {
           );
         }
 
-        return Center(
-          child: Text("People!!"),
+        return const Center(
+          child: CnDottedLoadingAnimation(),
         );
       },
     );

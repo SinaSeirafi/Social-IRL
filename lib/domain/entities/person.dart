@@ -11,7 +11,7 @@ class Person extends Equatable {
   final int id;
   String name;
 
-  SocialCircle? socialCircle;
+  SocialCircle socialCircle;
   SocialCircle? potentialForCircle;
 
   String? notes;
@@ -28,7 +28,7 @@ class Person extends Equatable {
   Person({
     required this.id,
     required this.name,
-    this.socialCircle,
+    required this.socialCircle,
     this.potentialForCircle,
     this.notes,
   }) {
@@ -53,6 +53,8 @@ class Person extends Equatable {
 
   void copyDataFromPerson(Person person) =>
       PersonGeneralUsecases.copyDataFromPerson(person, this);
+
+  String get nameAndCircleEmoji => name + " " + socialCircle.title;
 }
 
 class SocialCircle extends Equatable {
