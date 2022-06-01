@@ -82,6 +82,8 @@ class PersonGeneralUsecases {
     List<String> tagStrings = extractDataFromNotes(person.notes, tagPattern);
 
     for (var item in tagStrings) {
+      if (item.isEmpty) continue;
+
       person.tags.add(PersonTag(id: 0, title: item));
     }
   }

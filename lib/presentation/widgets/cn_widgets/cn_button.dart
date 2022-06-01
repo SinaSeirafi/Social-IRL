@@ -7,18 +7,22 @@ import 'cn_text.dart';
 class CnButton extends StatelessWidget {
   const CnButton({
     Key? key,
-    required this.title,
     required this.onPressed,
+    required this.title,
+    this.largeTitle = true,
     this.color,
     this.active = true,
     this.loading = false,
     this.size,
     this.fullWidth = false,
     this.width,
+    this.elevation = 2,
   }) : super(key: key);
 
-  final String title;
   final Function onPressed;
+
+  final String title;
+  final bool largeTitle;
 
   final Color? color; // defaultButtonColor
   final bool active;
@@ -27,6 +31,7 @@ class CnButton extends StatelessWidget {
   final bool fullWidth;
   final Size? size;
   final double? width;
+  final double? elevation;
 
   static double buttonHeight = 50;
   static double buttonWidth = deviceWidth / 1.2;
@@ -37,6 +42,7 @@ class CnButton extends StatelessWidget {
       child: _buildChild(),
       onPressed: () => onPressed(),
       style: ElevatedButton.styleFrom(
+        elevation: elevation,
         fixedSize: _size,
         primary: color ?? defaultButtonColor,
         onSurface: defaultDisabledButtonColor,
@@ -46,6 +52,8 @@ class CnButton extends StatelessWidget {
 
   Widget _buildChild() {
     if (loading) return const CnDottedLoadingAnimation();
+
+    if (largeTitle) return CnTitle(title, color: defaultTextColor);
 
     return CnText(title, color: defaultTextColor);
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_irl/core/app_constants.dart';
+import 'package:social_irl/domain/usecases/person_usecases.dart';
 
 import '../../domain/entities/person.dart';
 import '../bloc/person_bloc.dart';
@@ -64,8 +65,11 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
   }
 
   Widget _buildNoteSuggestions() {
+    const List<String> personDefaultTagSuggestions = [];
+
     return NotesSuggestor(
-      mode: NoteMode.person,
+      suggestions: personDefaultTagSuggestions,
+      mode: SuggestionMode.tag,
       focusNode: _notesFocusNode,
       controller: _notesController,
     );
@@ -108,6 +112,8 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
     person.name = _nameController.text;
     person.notes = _notesController.text;
+
+    PersonGeneralUsecases.setPersonTagsBasedOnNotes(person);
 
     if (editMode) {
       // Updating the data from temp

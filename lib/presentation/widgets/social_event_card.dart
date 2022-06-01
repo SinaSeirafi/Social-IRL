@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/social_event_bloc.dart';
 import 'cn_widgets/cn_message.dart';
+import 'common_widgets.dart';
 
 class SocialEventCard extends StatelessWidget {
   const SocialEventCard({
@@ -27,6 +28,7 @@ class SocialEventCard extends StatelessWidget {
       child: InkWell(
         onTap: () => _navigateToEditPage(context),
         child: Card(
+          margin: noTopPadding,
           child: ListTile(
             title: _buildTitle(),
             subtitle: _buildSubtitle(),
@@ -56,7 +58,13 @@ class SocialEventCard extends StatelessWidget {
       text += person.name + " ";
     }
 
-    return Text(text);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(text),
+        TagsInCardWrap(tags: socialEvent.tags),
+      ],
+    );
   }
 
   Future<bool> _confirmDelete(BuildContext context) async {

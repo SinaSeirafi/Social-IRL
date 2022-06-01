@@ -80,7 +80,7 @@ class _CnTextFieldAndHeaderState extends State<CnTextFieldAndHeader> {
 
     if (widget.required) _title += " * ";
 
-    return CnText(_title);
+    return CnTitle(_title);
   }
 
   Widget _buildTitleRowHint() {

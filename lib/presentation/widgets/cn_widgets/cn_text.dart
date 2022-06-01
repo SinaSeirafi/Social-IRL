@@ -93,7 +93,7 @@ class CnTitle extends StatelessWidget {
   const CnTitle(
     this.title, {
     Key? key,
-    this.fontSize = 27.0,
+    this.fontSize = 16.0,
     this.color,
     this.upperCase = false,
     this.isBold = true,

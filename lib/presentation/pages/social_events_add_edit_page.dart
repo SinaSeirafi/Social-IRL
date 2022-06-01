@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/domain/entities/person.dart';
+import 'package:social_irl/domain/usecases/social_event_usecases.dart';
 import 'package:social_irl/presentation/bloc/person_bloc.dart';
 import 'package:social_irl/presentation/widgets/cn_widgets/cn_message.dart';
+import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
 import 'package:social_irl/presentation/widgets/notes_suggester.dart';
 
 import '../../core/extract_data_from_notes.dart';
@@ -48,7 +50,10 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
                   _buildTitleTextField(),
                   _buildDatePicker(),
                   _buildNotesTextField(),
-                  _buildNoteSuggestions(),
+                  _buildTitle("Attendees"),
+                  _buildNoteAttendeesSuggestions(),
+                  _buildTitle("Tags"),
+                  _buildNoteTagsSuggestions(),
                 ],
               ),
             ),
@@ -61,9 +66,39 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     );
   }
 
-  Widget _buildNoteSuggestions() {
+  _buildTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: defaultPadding),
+      child: CnTitle(title),
+    );
+  }
+
+  Widget _buildNoteAttendeesSuggestions() {
+    List<String> suggestions = [];
+
+    final state = context.read<PersonBloc>().state as PersonLoaded;
+
+    for (var person in state.persons) {
+      suggestions.add(person.name);
+    }
+
     return NotesSuggestor(
-      mode: NoteMode.socialEvent,
+      mode: SuggestionMode.attendee,
+      suggestions: suggestions,
+      focusNode: _notesFocusNode,
+      controller: _notesController,
+    );
+  }
+
+  Widget _buildNoteTagsSuggestions() {
+    const List<String> socialDefaultTagSuggestions = [
+      "Meet",
+      "Call",
+    ];
+
+    return NotesSuggestor(
+      mode: SuggestionMode.tag,
+      suggestions: socialDefaultTagSuggestions,
       focusNode: _notesFocusNode,
       controller: _notesController,
     );
@@ -76,17 +111,6 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     );
   }
 
-  Container _buildDatePicker() {
-    return Container(
-      width: deviceWidth,
-      height: 100,
-      child: CupertinoDatePicker(
-        onDateTimeChanged: _onDateTimeChanged,
-        mode: CupertinoDatePickerMode.date,
-      ),
-    );
-  }
-
   CnTextFieldAndHeader _buildNotesTextField() {
     return CnTextFieldAndHeader(
       title: "Notes",
@@ -96,6 +120,17 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
       textInputAction: TextInputAction.done,
       onFieldSubmitted: _submitForm,
       required: true,
+    );
+  }
+
+  Widget _buildDatePicker() {
+    return SizedBox(
+      width: deviceWidth,
+      height: 100,
+      child: CupertinoDatePicker(
+        onDateTimeChanged: _onDateTimeChanged,
+        mode: CupertinoDatePickerMode.date,
+      ),
     );
   }
 
@@ -132,14 +167,11 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     socialEvent.title = _titleController.text;
     socialEvent.notes = _notesController.text;
 
+    SocialEventGeneralUsecases.setSocialEventTagsBasedOnNotes(socialEvent);
+
     if (editMode) {
       // Updating the data from temp
       widget.socialEvent!.copyDataFromSocialEvent(socialEvent);
-
-      /// To fix Unknown bug.
-      /// Sometimes, the opinion page doesn't get updated after edit question is called
-      /// Even if it is related to async functions of edit event, it should happen at a later point, but it doesn't
-      // context.read<SocialEventBloc>().add(UpdateSocialEventScoreEvent(widget.question!));
 
       context
           .read<SocialEventBloc>()
@@ -171,47 +203,17 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   }
 
   bool _validateEventAttendees() {
-    socialEvent.attendees = [];
-
-    List<String> attendeesString =
-        extractDataFromNotes(_notesController.text, atPattern);
-
-    if (attendeesString.isEmpty) {
-      showCnMessage(
-        context,
-        text: "So, it was a personal event? \nNot really social, is it? :D"
-            "\n\nPlease add at least one attendee \n(type @name in the notes text box)",
-      );
-      return false;
-    }
-
     final state = context.read<PersonBloc>().state as PersonLoaded;
 
-    for (var item in attendeesString) {
-      // is .any() and .firstWhere() faster than this?
-      bool found = false;
+    String? test = SocialEventGeneralUsecases.validateEventAttendees(
+      state.persons,
+      socialEvent,
+      _notesController,
+    );
 
-      for (var person in state.persons) {
-        if (person.name.toLowerCase() == item.toLowerCase()) {
-          // FIXME: so ... what if two people have the same name? :D
-
-          /// should be much more advanced and show possible options (if multiple)
-          /// and user chooses between them
-          /// but for now it can be enough
-
-          socialEvent.attendees.add(person);
-          found = true;
-          break;
-        }
-      }
-
-      if (!found) {
-        showCnMessage(
-          context,
-          text: "One of the people was not found",
-        );
-        return false;
-      }
+    if (test != null) {
+      showCnMessage(context, text: test);
+      return false;
     }
 
     return true;

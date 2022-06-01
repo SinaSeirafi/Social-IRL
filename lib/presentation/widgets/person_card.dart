@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:social_irl/core/app_router.dart';
+import 'package:social_irl/core/cn_helper.dart';
 import 'package:social_irl/domain/entities/person.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_irl/presentation/widgets/cn_widgets/cn_button.dart';
 
 import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
 
 import '../../core/app_constants.dart';
+import '../../domain/entities/tag.dart';
 import '../bloc/person_bloc.dart';
 import 'cn_widgets/cn_message.dart';
+import 'common_widgets.dart';
 
 class PersonCard extends StatelessWidget {
   const PersonCard({
@@ -27,10 +31,11 @@ class PersonCard extends StatelessWidget {
       child: InkWell(
         onTap: () => _navigateToEditPage(context),
         child: Card(
+          margin: noTopPadding,
           child: ListTile(
             leading: _buildSocialCircle(),
-            title: Text(person.name),
-            subtitle: _buildSubtitle(),
+            title: CnTitle(person.name),
+            subtitle: _buildSubtitle(context),
           ),
         ),
       ),
@@ -46,17 +51,21 @@ class PersonCard extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle() {
-    String _subTitleText = "Never 😬";
+  String _timePassed() {
+    if (person.socialEvents.isEmpty) return "Never 😬";
 
-    if (person.socialEvents.isNotEmpty) {
-      DateTime lastEvent = person.socialEvents.last.startDate;
+    return h.timePassed(person.socialEvents.last.startDate) ??
+        "Less than a second ago! That's a record! :))";
+  }
 
-      _subTitleText = lastEvent.difference(DateTime.now()).inSeconds.toString();
-      // _subTitleText = lastEvent.difference(DateTime.now()).inDays.toString();
-    }
-
-    return Text(_subTitleText);
+  Widget _buildSubtitle(context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Last Event: " + _timePassed()),
+        TagsInCardWrap(tags: person.tags),
+      ],
+    );
   }
 
   _buildSocialCircle() {

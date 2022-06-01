@@ -231,6 +231,31 @@ class Helper {
     return price.toStringAsFixed(decimalPoints);
   }
 
+  String? timePassed(DateTime dateTime) {
+    Duration difference = -dateTime.difference(DateTime.now());
+
+    int diff = 0;
+    String type = "";
+
+    if (difference.inDays > 0) {
+      diff = difference.inDays;
+      type = "day";
+    } else if (difference.inHours > 0) {
+      diff = difference.inHours;
+      type = "hour";
+    } else if (difference.inMinutes > 0) {
+      diff = difference.inMinutes;
+      type = "minute";
+    } else if (difference.inSeconds > 0) {
+      diff = difference.inSeconds;
+      type = "second";
+    }
+
+    if (diff > 0) return "$diff $type${diff > 1 ? "s" : ""} ago";
+
+    return null;
+  }
+
   TextDirection getTextDirectionByFirstLetter(String v) {
     final string = v.trim();
     if (string.isEmpty) return TextDirection.ltr;

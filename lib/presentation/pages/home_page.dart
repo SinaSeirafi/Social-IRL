@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:social_irl/core/cn_helper.dart';
 
 import '../../core/app_constants.dart';
 import '../../core/app_router.dart';
@@ -16,50 +19,71 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        centerTitle: false,
-        title: Text(_pages[_selectedTab].text),
-      ),
-      body: _pages[_selectedTab].page,
-      bottomNavigationBar: _buildButtomNavBar(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _buildFAB(),
+    controller.addListener(() => streamController.add(controller.page));
+
+    return StreamBuilder(
+      stream: streamController.stream,
+      initialData: 0,
+      builder: (context, snapshot) {
+        int _selectedTab = h.roundToInt(controller.page ?? 0.0)!;
+
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.transparent,
+            centerTitle: false,
+            title: Text(_pages[_selectedTab].text),
+          ),
+          body: PageView(
+            controller: controller,
+            children: [
+              for (var page in _pages) page.page,
+            ],
+          ),
+          bottomNavigationBar: _buildButtomNavBar(_selectedTab),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: _buildFAB(_selectedTab),
+        );
+      },
     );
   }
 
-  int _selectedTab = 0;
+  final StreamController streamController = StreamController();
 
   _selectTab(int index) {
-    setState(() => _selectedTab = index);
+    controller.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
-  _buildButtomNavBar() {
+  final PageController controller = PageController();
+
+  _buildButtomNavBar(index) {
     return FABBottomAppBar(
       items: _items,
       onTabSelected: _selectTab,
       backgroundColor: primaryColor,
-      color: accentColor.withOpacity(0.5),
+      color: accentColor.withOpacity(0.3),
       selectedColor: accentColor,
+      startingIndex: index,
     );
   }
 
-  _buildFAB() {
+  _buildFAB(index) {
     return FloatingActionButton(
       backgroundColor: primaryColor,
       child: Icon(
-        _pages[_selectedTab].fabIconData,
+        _pages[index].fabIconData,
         color: accentColor,
       ),
       onPressed: () {
         router.navigateTo(
           context,
-          _selectedTab == 0
-              ? CnRouter.addPersonRoute
-              : CnRouter.addSocialEventRoute,
+          index == 0 ? CnRouter.addPersonRoute : CnRouter.addSocialEventRoute,
         );
       },
     );

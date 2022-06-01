@@ -31,4 +31,8 @@ const String defaultFontFamily = 'CircularStd';
 const double defaultPadding = 10;
 double deviceWidth = 0; // set in the splash screen page build method
 double deviceHeight = 0; // set in the splash screen page build method
-
+const EdgeInsetsGeometry noTopPadding = EdgeInsets.only(
+  left: defaultPadding,
+  right: defaultPadding,
+  bottom: defaultPadding,
+);

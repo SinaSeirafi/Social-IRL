@@ -11,5 +11,5 @@ List<String> extractDataFromNotes(String? notes, String pattern) {
     }
   }
 
-  return wordsThatStartWithPattern;
+  return wordsThatStartWithPattern.toSet().toList();
 }

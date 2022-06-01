@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:social_irl/data/datasources/dummyData.dart';
 
 import '../../core/failures.dart';
 import '../../domain/entities/social_event.dart';
@@ -12,7 +11,7 @@ class SocialEventRepository implements AbsSocialEventRepository {
 
   // final DatabaseHelper databaseHelper = DatabaseHelper();
 
-  List<SocialEvent> socialEventsDataList = [dummySocialEvent1];
+  List<SocialEvent> socialEventsDataList = [];
 
   @override
   Future<Either<Failure, List<SocialEvent>>> getSocialEventList() async {
