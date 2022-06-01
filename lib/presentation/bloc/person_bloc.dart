@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_irl/presentation/bloc/social_event_bloc.dart';
 
 import '../../core/failures.dart';
+import '../../core/usecases.dart';
 import '../../domain/entities/person.dart';
 import '../../domain/entities/social_event.dart';
 import '../../domain/usecases/person_usecases.dart';
@@ -19,18 +20,15 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
   final EditPerson _editPerson = EditPerson();
   final RemovePerson _removePerson = RemovePerson();
 
-  _emitLoading(emit) => emit(const Loading());
+  _emitLoading(emit) => emit(const PersonLoading());
 
   PersonBloc() : super(PersonInitial()) {
     on<LoadPersonData>((event, emit) async {
       _emitLoading(emit);
 
-      Either<Failure, List<Person>> failureOrPersonList =
-          await _getPersonList(NoParams());
-
       emit(
         _eitherLoadedOrErrorState(
-          failureOrPersonList,
+          await _getPersonList(NoParams()),
           // future.first,
           "Get person list error.",
         ),
@@ -42,12 +40,9 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       if (state is PersonLoaded) {
         _emitLoading(emit);
 
-        Either<Failure, List<Person>> failureOrPersonList =
-            await _addPerson(Params(event.person));
-
         emit(
           _eitherLoadedOrErrorState(
-            failureOrPersonList,
+            await _addPerson(PersonParams(event.person)),
             "Add person error.",
           ),
         );
@@ -58,12 +53,9 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
       if (state is PersonLoaded) {
         _emitLoading(emit);
 
-        Either<Failure, List<Person>> failureOrPersonList =
-            await _editPerson(Params(event.person));
-
         emit(
           _eitherLoadedOrErrorState(
-            failureOrPersonList,
+            await _editPerson(PersonParams(event.person)),
             "Edit person error.",
           ),
         );
@@ -88,15 +80,15 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
           /// instead of context
           ///
           /// FIXME: does it need a listener here in order to ... await the removal
-          event.context
-              .read<SocialEventBloc>()
-              .add(HandlePersonRemoved(socialEvent, event.person));
+          event.context.read<SocialEventBloc>().add(
+              HandleSocialEventsInCaseOfPersonRemoved(
+                  socialEvent, event.person));
         }
 
         event.person.isDeleted = true;
 
         Either<Failure, List<Person>> failureOrPersonList =
-            await _removePerson(Params(event.person));
+            await _removePerson(PersonParams(event.person));
 
         emit(
           _eitherLoadedOrErrorState(

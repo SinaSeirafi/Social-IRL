@@ -12,8 +12,8 @@ class PersonRepository implements AbsPersonRepository {
 
   // final DatabaseHelper databaseHelper = DatabaseHelper();
 
-  // List<Person> personsDataList = [dummyPerson1, dummyPerson2];
-  List<Person> personsDataList = [];
+  List<Person> personsDataList = [dummyPerson1, dummyPerson2];
+  // List<Person> personsDataList = [];
 
   static const int demoModeDelayInMilliSeconds = 30;
 

@@ -9,8 +9,8 @@ abstract class PersonState extends Equatable {
 
 class PersonInitial extends PersonState {}
 
-class Loading extends PersonState {
-  const Loading();
+class PersonLoading extends PersonState {
+  const PersonLoading();
 }
 
 class PersonLoaded extends PersonState {

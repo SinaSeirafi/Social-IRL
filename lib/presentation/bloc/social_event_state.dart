@@ -9,6 +9,10 @@ abstract class SocialEventState extends Equatable {
 
 class SocialEventInitial extends SocialEventState {}
 
+class SocialEventLoading extends SocialEventState {
+  const SocialEventLoading();
+}
+
 class SocialEventLoaded extends SocialEventState {
   final List<SocialEvent> events;
 

@@ -1,5 +1,21 @@
 import 'package:flutter/material.dart';
 
+class AppPage {
+  final IconData navIconData;
+  final IconData fabIconData;
+  final String text;
+  final String fabRoute;
+  final Widget page;
+
+  AppPage({
+    required this.navIconData,
+    required this.fabIconData,
+    required this.text,
+    required this.fabRoute,
+    required this.page,
+  });
+}
+
 class FABBottomAppBarItem {
   FABBottomAppBarItem({
     required this.iconData,
@@ -10,21 +26,19 @@ class FABBottomAppBarItem {
 }
 
 class FABBottomAppBar extends StatefulWidget {
-  FABBottomAppBar({
+  const FABBottomAppBar({
     Key? key,
     required this.items,
     this.centerItemText,
     this.backgroundColor = Colors.blueGrey,
-    this.color = Colors.teal,
-    this.selectedColor = Colors.tealAccent,
-    required this.notchedShape,
+    this.color = Colors.grey,
+    this.selectedColor = Colors.white,
+    this.notchedShape = const CircularNotchedRectangle(),
     required this.onTabSelected,
-    this.height = 60.0,
+    this.height = 70.0,
     this.iconSize = 24.0,
-  }) : super(key: key) {
-    // TODO: dafuq?!
-    assert(items.length == 2 || items.length == 4);
-  }
+  }) : super(key: key);
+
   final List<FABBottomAppBarItem> items;
   final String? centerItemText;
   final double height;

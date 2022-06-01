@@ -46,7 +46,7 @@ void main() {
     act: (bloc) => bloc.add(const LoadPersonData()),
     wait: Duration(milliseconds: defaultDelay),
     expect: () => const <PersonState>[
-      Loading(),
+      PersonLoading(),
       PersonLoaded(persons: []),
     ],
   );
@@ -56,7 +56,7 @@ void main() {
     expect(personBloc.state, PersonInitial());
 
     await _delay(loadingDelay);
-    expect(personBloc.state.runtimeType, Loading);
+    expect(personBloc.state.runtimeType, PersonLoading);
 
     await _delay();
     expect(personBloc.state.runtimeType, PersonLoaded);
@@ -68,7 +68,7 @@ void main() {
     personBloc.add(AddPersonEvent(person));
 
     await _delay(loadingDelay);
-    expect(personBloc.state.runtimeType, Loading);
+    expect(personBloc.state.runtimeType, PersonLoading);
 
     await _delay();
     expect(personBloc.state.runtimeType, PersonLoaded);

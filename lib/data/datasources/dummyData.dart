@@ -14,6 +14,18 @@ Person dummyPerson2 = Person(
   socialCircle: dummySocialCircle1,
 );
 
+Person dummyPerson3 = Person(
+  id: 3,
+  name: "Ava",
+  socialCircle: dummySocialCircle1,
+);
+
+Person dummyPerson4 = Person(
+  id: 3,
+  name: "Alaleh",
+  socialCircle: dummySocialCircle2,
+);
+
 SocialCircle dummySocialCircle1 = const SocialCircle(id: 1, title: "1");
 SocialCircle dummySocialCircle2 = const SocialCircle(id: 2, title: "2");
 SocialCircle dummySocialCircle3 = const SocialCircle(id: 3, title: "3");
@@ -27,4 +39,10 @@ SocialEvent dummySocialEvent1 = SocialEvent(
   id: 1,
   startDate: DateTime.now(),
   attendees: [dummyPerson1],
+);
+
+SocialEvent dummySocialEvent2 = SocialEvent(
+  id: 1,
+  startDate: DateTime.now(),
+  attendees: [dummyPerson1, dummyPerson2],
 );

@@ -16,7 +16,7 @@ class Person extends Equatable {
   String? notes;
   List<PersonTag>? tags;
 
-  List<SocialEvent> socialEvents;
+  late List<SocialEvent> socialEvents;
 
   /// Default
   bool isDeleted = false;
@@ -31,9 +31,9 @@ class Person extends Equatable {
     this.potentialForCircle,
     this.notes,
     this.tags,
-    this.socialEvents = const [],
   }) {
     createdAt = modifiedAt = DateTime.now();
+    socialEvents = [];
   }
 
   @override
