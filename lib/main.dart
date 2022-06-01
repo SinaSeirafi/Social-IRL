@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_irl/presentation/bloc/person_bloc.dart';
-import 'package:social_irl/presentation/bloc/social_event_bloc.dart';
-import 'package:social_irl/presentation/pages/home_page.dart';
+
+import 'core/app_router.dart';
+import 'presentation/bloc/person_bloc.dart';
+import 'presentation/bloc/social_event_bloc.dart';
+import 'presentation/pages/splash_screen_page.dart';
 
 void main() {
   runApp(const MyApp());
+
+  CnRouter.instance.routerSetup();
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +32,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.grey,
         ),
-        home: const HomePage(),
+        home: const SplashScreenPage(),
       ),
     );
   }

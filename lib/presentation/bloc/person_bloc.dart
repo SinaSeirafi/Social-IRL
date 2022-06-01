@@ -74,15 +74,17 @@ class PersonBloc extends Bloc<PersonEvent, PersonState> {
         /// or
         /// https://medium.com/flutter-community/flutter-design-patterns-22-mediator-575e7aa6bfa9
         for (SocialEvent socialEvent in event.person.socialEvents) {
-          /// This can also receive [socialEventBloc] and work with that
-          /// like this:
-          /// [Bloc socialEventBloc = SocialEventBloc();]
-          /// instead of context
-          ///
-          /// FIXME: does it need a listener here in order to ... await the removal
-          event.context.read<SocialEventBloc>().add(
-              HandleSocialEventsInCaseOfPersonRemoved(
-                  socialEvent, event.person));
+          socialEvent.attendees.remove(event.person);
+
+          event.context
+              .read<SocialEventBloc>()
+              .add(EditSocialEventEvent(socialEvent));
+
+          if (socialEvent.attendees.isEmpty) {
+            event.context
+                .read<SocialEventBloc>()
+                .add(RemoveSocialEventEvent(event.context, socialEvent));
+          }
         }
 
         event.person.isDeleted = true;

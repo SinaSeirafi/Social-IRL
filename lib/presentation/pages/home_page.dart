@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:social_irl/core/app_router.dart';
 import 'package:social_irl/data/datasources/dummyData.dart';
+import 'package:social_irl/domain/entities/social_event.dart';
 import 'package:social_irl/presentation/bloc/person_bloc.dart';
 import 'package:social_irl/presentation/bloc/social_event_bloc.dart';
 import 'package:social_irl/presentation/pages/social_events_page.dart';
 import 'package:social_irl/presentation/pages/people_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/app_constants.dart';
 import '../widgets/fab_buttom_app_bar.dart';
-
-Color primaryColor = Colors.white;
-Color accentColor = Colors.black87;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,11 +54,17 @@ class _HomePageState extends State<HomePage> {
       ),
       onPressed: () {
         if (_selectedTab == 0) {
-          context.read<PersonBloc>().add(AddPersonEvent(dummyPerson3));
+          router.navigateTo(context, CnRouter.addPersonRoute);
+
+          // context.read<PersonBloc>().add(AddPersonEvent(dummyPerson3));
         } else {
-          context
-              .read<SocialEventBloc>()
-              .add(AddSocialEventEvent(dummySocialEvent2));
+          final state = context.read<PersonBloc>().state as PersonLoaded;
+
+          context.read<SocialEventBloc>().add(AddSocialEventEvent(SocialEvent(
+                id: DateTime.now().millisecondsSinceEpoch,
+                startDate: DateTime.now(),
+                attendees: [state.persons.last],
+              )));
         }
 
         setState(() {});

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:social_irl/domain/entities/social_event.dart';
+import 'package:social_irl/domain/usecases/person_usecases.dart';
 
 import 'tag.dart';
 
@@ -10,7 +11,7 @@ class Person extends Equatable {
   final int id;
   String name;
 
-  SocialCircle socialCircle;
+  SocialCircle? socialCircle;
   SocialCircle? potentialForCircle;
 
   String? notes;
@@ -27,7 +28,7 @@ class Person extends Equatable {
   Person({
     required this.id,
     required this.name,
-    required this.socialCircle,
+    this.socialCircle,
     this.potentialForCircle,
     this.notes,
     this.tags,
@@ -49,6 +50,9 @@ class Person extends Equatable {
         createdAt,
         modifiedAt
       ];
+
+  void copyDataFromPerson(Person person) =>
+      PersonGeneralUsecases.copyDataFromPerson(person, this);
 }
 
 class SocialCircle extends Equatable {

@@ -33,9 +33,10 @@ class EditSocialEventEvent extends SocialEventEvent {
 }
 
 class RemoveSocialEventEvent extends SocialEventEvent {
+  final BuildContext context;
   final SocialEvent socialEvent;
 
-  const RemoveSocialEventEvent(this.socialEvent);
+  const RemoveSocialEventEvent(this.context, this.socialEvent);
 
   @override
   List<Object> get props => [socialEvent];

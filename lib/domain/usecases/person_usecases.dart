@@ -59,3 +59,17 @@ class RemovePerson extends PersonUsecase<List<Person>, PersonParams> {
     return await _repository.deletePerson(params.person);
   }
 }
+
+class PersonGeneralUsecases {
+  static void copyDataFromPerson(Person source, Person target) {
+    target.name = source.name;
+    target.socialCircle = source.socialCircle;
+    target.potentialForCircle = source.potentialForCircle;
+    target.notes = source.notes;
+    target.tags = source.tags;
+    target.socialEvents = source.socialEvents;
+    target.isDeleted = source.isDeleted;
+    target.createdAt = source.createdAt;
+    target.modifiedAt = source.modifiedAt;
+  }
+}

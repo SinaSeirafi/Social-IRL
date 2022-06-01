@@ -24,7 +24,6 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
       EditSocialEventUsecase();
   final RemoveSocialEventUsecase _removeSocialEventUsecase =
       RemoveSocialEventUsecase();
-  final EditPerson _editPerson = EditPerson();
 
   SocialEventBloc() : super(SocialEventInitial()) {
     on<LoadSocialEventData>((event, emit) async {
@@ -63,6 +62,14 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
     on<RemoveSocialEventEvent>((event, emit) async {
       // final state = this.state as SocialEventLoaded;
 
+      for (var person in event.socialEvent.attendees) {
+        // Remove event from person and call EditPerson
+        person.socialEvents.remove(event.socialEvent);
+
+        // handles its own loading, no need to await it
+        event.context.read<PersonBloc>().add(EditPersonEvent(person));
+      }
+
       event.socialEvent.isDeleted = true;
 
       _emitLoading(emit);
@@ -75,28 +82,24 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
       );
     });
 
-    /// When a [Person] is removed, remove it from all of the social events
-    /// Also, if a [SocialEvent] only included that person, it should be removed as well
+    /// When a [Person] is removed from a specific social event
     on<RemovePersonFromSocialEvent>((event, emit) async {
-      // Edit Person
-      // TODO: remove event from person and call EditPerson?
+      // Remove event from person and call EditPerson
       event.person.socialEvents.remove(event.socialEvent);
 
       // handles its own loading, no need to await it
       event.context.read<PersonBloc>().add(EditPersonEvent(event.person));
 
-      // Edit Social Event
-      Either<Failure, List<SocialEvent>> socialEventListOrFailure =
-          await _editSocialEventUsecase(Params(event.socialEvent));
+      // Remove person from event attendees and call EditSocialEvent
+      event.socialEvent.attendees.remove(event.person);
 
-      socialEventListOrFailure.fold(
-        (failure) {
-          emit(const SocialEventError("Edit socialEvent error."));
-          return;
-        },
-        (socialEventList) {
-          emit(SocialEventLoaded(events: socialEventList));
-        },
+      _emitLoading(emit);
+
+      emit(
+        _eitherLoadedOrErrorState(
+          await _editSocialEventUsecase(Params(event.socialEvent)),
+          "Edit socialEvent list error.",
+        ),
       );
     });
 
