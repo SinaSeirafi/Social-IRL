@@ -20,7 +20,11 @@ class _SocialEventsListPageState extends State<SocialEventsListPage> {
         if (state is SocialEventLoaded) {
           if (state.events.isEmpty) {
             return const Center(
-              child: Text("Add events with the button below"),
+              child: Text(
+                "Add events with the button below."
+                "\n\nMake sure to add some people first!",
+                textAlign: TextAlign.center,
+              ),
             );
           }
 

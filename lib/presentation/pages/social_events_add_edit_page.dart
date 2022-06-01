@@ -146,11 +146,20 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   }
 
   Widget _buildFAB() {
+    double bottomPadding = 0;
+
+    if (MediaQuery.of(context).padding.bottom == 0) {
+      bottomPadding = defaultPadding * 3;
+    }
+
     return SafeArea(
-      child: CnButton(
-        title: "Save",
-        fullWidth: true,
-        onPressed: _submitForm,
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomPadding),
+        child: CnButton(
+          title: "Save",
+          fullWidth: true,
+          onPressed: _submitForm,
+        ),
       ),
     );
   }

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/app_router.dart';
@@ -8,6 +11,13 @@ import 'presentation/pages/splash_screen_page.dart';
 
 void main() {
   runApp(const MyApp());
+
+  if (Platform.isAndroid) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.white, // navigation bar color
+      statusBarColor: Colors.white, // status bar color
+    ));
+  }
 
   CnRouter.instance.routerSetup();
 }

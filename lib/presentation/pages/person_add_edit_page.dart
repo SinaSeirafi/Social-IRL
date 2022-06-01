@@ -54,7 +54,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
                 ],
               ),
             ),
-            _buildFAB(),
+            _buildButton(),
           ],
         ),
       ),
@@ -85,13 +85,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     );
   }
 
-  double _socialCircleValue = 0;
-
   _buildSocialCircle() {
-    double _sliderMaxValue = allSocialCircles.length - 1;
-
-    String label = allSocialCircles[h.roundToInt(_socialCircleValue)!].title;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
       child: Wrap(
@@ -112,18 +106,6 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
             ),
         ],
       ),
-    );
-
-    return Slider(
-      value: _socialCircleValue,
-      max: _sliderMaxValue,
-      divisions: _sliderMaxValue.toInt(),
-      label: label,
-      onChanged: (value) {
-        setState(() {
-          _socialCircleValue = value;
-        });
-      },
     );
   }
 
@@ -150,12 +132,21 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     );
   }
 
-  Widget _buildFAB() {
+  Widget _buildButton() {
+    double bottomPadding = 0;
+
+    if (MediaQuery.of(context).padding.bottom == 0) {
+      bottomPadding = defaultPadding * 3;
+    }
+
     return SafeArea(
-      child: CnButton(
-        title: "Save",
-        fullWidth: true,
-        onPressed: _submitForm,
+      child: Container(
+        margin: EdgeInsets.only(bottom: bottomPadding),
+        child: CnButton(
+          title: "Save",
+          fullWidth: true,
+          onPressed: _submitForm,
+        ),
       ),
     );
   }
@@ -170,8 +161,6 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     person.notes = _notesController.text;
 
     PersonGeneralUsecases.setPersonTagsBasedOnNotes(person);
-
-    person.socialCircle = allSocialCircles[_socialCircleValue.toInt()];
 
     if (editMode) {
       // Updating the data from temp
@@ -213,8 +202,6 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
     _nameController.text = person.name;
     _notesController.text = person.notes ?? "";
-
-    _socialCircleValue = person.socialCircle.id.toDouble();
   }
 
   @override
