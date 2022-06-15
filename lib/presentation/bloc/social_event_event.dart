@@ -43,18 +43,6 @@ class RemoveSocialEventEvent extends SocialEventEvent {
   List<Object> get props => [socialEvent];
 }
 
-// class RemovePersonFromSocialEvent extends SocialEventEvent {
-//   final BuildContext context;
-//   final SocialEvent socialEvent;
-//   final Person person;
-
-//   const RemovePersonFromSocialEvent(
-//       this.context, this.socialEvent, this.person);
-
-//   @override
-//   List<Object> get props => [socialEvent];
-// }
-
 class HandleSocialEventsInCaseOfPersonRemoved extends SocialEventEvent {
   final SocialEvent socialEvent;
   final Person person;
