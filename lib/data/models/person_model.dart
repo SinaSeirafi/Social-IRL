@@ -54,22 +54,37 @@ class PersonModel extends Equatable {
         socialEvents,
         isDeleted,
         createdAt,
-        modifiedAt
+        modifiedAt,
+        lastSocialEvent,
+        nextSocialEvent,
       ];
 
   /// Data Needed for [PersonListPage]
   ///
+  /// Person ID
   /// Person Name
   /// Social Circle
   /// LastEventDate
   /// NextEventDate
   /// Person Tags
+  Map<String, dynamic> toJsonIncomplete() {
+    List tagsJson = [for (var tag in tags) tag.toJson()];
+
+    return {
+      'id': id,
+      'name': name,
+      'socialCircle': socialCircle.toJson(),
+      'lastSocialEvent': h.dateTimeToString(lastSocialEvent),
+      'nextSocialEvent': h.dateTimeToString(nextSocialEvent),
+      'createdAt': h.dateTimeToString(createdAt),
+      'modifiedAt': h.dateTimeToString(modifiedAt),
+      'isDeleted': isDeleted,
+      'tags': tagsJson,
+    };
+  }
 
   static PersonModel fromJsonIncomplete(Map<String, dynamic> data) {
-    SocialCircle socialCircle = SocialCircle(
-      id: h.intOkForced(data['socialCircle']['id']),
-      title: h.strOkForced(data['socialCircle']['title']),
-    );
+    SocialCircle socialCircle = SocialCircle.fromJson(data['socialCircle']);
 
     PersonModel temp = PersonModel(
       id: h.intOkForced(data['id']),
@@ -77,15 +92,19 @@ class PersonModel extends Equatable {
       socialCircle: socialCircle,
     );
 
-    // Can't be null
-    temp.createdAt = h.dateTimeOkForced(data['createdAt']);
-    temp.modifiedAt = h.dateTimeOkForced(data['modifiedAt']);
-
     // Can be null
     temp.lastSocialEvent = h.dateTimeOK(data['lastSocialEvent']);
     temp.nextSocialEvent = h.dateTimeOK(data['nextSocialEvent']);
 
-    temp.isDeleted = h.boolOk(data['isDeleted'])!;
+    // Can't be null
+    temp.createdAt = h.dateTimeOkForced(data['createdAt']);
+    temp.modifiedAt = h.dateTimeOkForced(data['modifiedAt']);
+
+    temp.isDeleted = h.boolOkForced(data['isDeleted']);
+
+    for (var element in data['tags']) {
+      temp.tags.add(PersonTag.fromJson(element));
+    }
 
     return temp;
   }

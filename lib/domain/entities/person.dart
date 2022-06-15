@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../core/cn_helper.dart';
 import '../usecases/person_usecases.dart';
 import 'social_event.dart';
 import 'tag.dart';
@@ -56,7 +57,9 @@ class Person extends Equatable {
         socialEvents,
         isDeleted,
         createdAt,
-        modifiedAt
+        modifiedAt,
+        lastSocialEvent,
+        nextSocialEvent,
       ];
 
   String get nameAndCircleEmoji => name + " " + socialCircle.title;
@@ -82,4 +85,18 @@ class SocialCircle extends Equatable {
 
   @override
   List<Object?> get props => [id, title];
+
+  factory SocialCircle.fromJson(Map<String, dynamic> data) {
+    return SocialCircle(
+      id: h.intOkForced(data['id']),
+      title: h.strOkForced(data['title']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+    };
+  }
 }
