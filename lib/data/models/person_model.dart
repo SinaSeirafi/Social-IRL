@@ -52,11 +52,11 @@ class PersonModel extends Equatable {
         notes,
         tags,
         socialEvents,
-        isDeleted,
-        createdAt,
-        modifiedAt,
         lastSocialEvent,
         nextSocialEvent,
+        createdAt,
+        modifiedAt,
+        isDeleted,
       ];
 
   /// Data Needed for [PersonListPage]
@@ -67,13 +67,22 @@ class PersonModel extends Equatable {
   /// LastEventDate
   /// NextEventDate
   /// Person Tags
+  ///
+  /// Missing fields:
+  /// [notes] and [socialEvents]
   Map<String, dynamic> toJsonIncomplete() {
     List tagsJson = [for (var tag in tags) tag.toJson()];
+
+    Map<String, dynamic>? potentialForCircleString;
+    if (potentialForCircle != null) {
+      potentialForCircleString = potentialForCircle!.toJson();
+    }
 
     return {
       'id': id,
       'name': name,
       'socialCircle': socialCircle.toJson(),
+      'potentialForCircle': potentialForCircleString,
       'lastSocialEvent': h.dateTimeToString(lastSocialEvent),
       'nextSocialEvent': h.dateTimeToString(nextSocialEvent),
       'createdAt': h.dateTimeToString(createdAt),
@@ -86,10 +95,16 @@ class PersonModel extends Equatable {
   static PersonModel fromJsonIncomplete(Map<String, dynamic> data) {
     SocialCircle socialCircle = SocialCircle.fromJson(data['socialCircle']);
 
+    SocialCircle? potentialForCircle;
+    if (data['potentialForCircle'] != null) {
+      potentialForCircle = SocialCircle.fromJson(data['potentialForCircle']);
+    }
+
     PersonModel temp = PersonModel(
       id: h.intOkForced(data['id']),
       name: h.strOkForced(data['name']),
       socialCircle: socialCircle,
+      potentialForCircle: potentialForCircle,
     );
 
     // Can be null
@@ -105,6 +120,50 @@ class PersonModel extends Equatable {
     for (var element in data['tags']) {
       temp.tags.add(PersonTag.fromJson(element));
     }
+
+    return temp;
+  }
+
+  Person personFromPersonModel() {
+    Person temp = Person(
+      id: id,
+      name: name,
+      socialCircle: socialCircle,
+      potentialForCircle: potentialForCircle,
+      notes: notes,
+    );
+
+    temp.tags = [for (var tag in tags) tag];
+    temp.socialEvents = [for (var event in socialEvents) event];
+
+    temp.lastSocialEvent = lastSocialEvent;
+    temp.nextSocialEvent = nextSocialEvent;
+
+    temp.createdAt = createdAt;
+    temp.modifiedAt = modifiedAt;
+    temp.isDeleted = isDeleted;
+
+    return temp;
+  }
+
+  static PersonModel personModelFromPerson(Person person) {
+    PersonModel temp = PersonModel(
+      id: person.id,
+      name: person.name,
+      socialCircle: person.socialCircle,
+      potentialForCircle: person.potentialForCircle,
+      notes: person.notes,
+    );
+
+    temp.tags = [for (var tag in person.tags) tag];
+    temp.socialEvents = [for (var event in person.socialEvents) event];
+
+    temp.lastSocialEvent = person.lastSocialEvent;
+    temp.nextSocialEvent = person.nextSocialEvent;
+
+    temp.createdAt = person.createdAt;
+    temp.modifiedAt = person.modifiedAt;
+    temp.isDeleted = person.isDeleted;
 
     return temp;
   }

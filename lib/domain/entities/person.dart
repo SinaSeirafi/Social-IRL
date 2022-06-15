@@ -55,11 +55,11 @@ class Person extends Equatable {
         notes,
         tags,
         socialEvents,
-        isDeleted,
-        createdAt,
-        modifiedAt,
         lastSocialEvent,
         nextSocialEvent,
+        createdAt,
+        modifiedAt,
+        isDeleted,
       ];
 
   String get nameAndCircleEmoji => name + " " + socialCircle.title;
