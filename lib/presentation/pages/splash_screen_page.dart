@@ -47,6 +47,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         context,
         CnRouter.homePageRoute,
         transition: fadeInTransition,
+        replace: true,
       );
     }
 
@@ -56,6 +57,7 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         context,
         CnRouter.onBoardingRoute,
         transition: fadeInTransition,
+        replace: true,
       );
     }
 

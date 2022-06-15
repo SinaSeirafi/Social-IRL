@@ -15,26 +15,29 @@ class PeopleListPage extends StatefulWidget {
 class _PeopleListPageState extends State<PeopleListPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PersonBloc, PersonState>(
-      builder: (context, state) {
-        if (state is PersonLoaded) {
-          if (state.persons.isEmpty) {
-            return const Center(
-              child: Text("Add people with the button below"),
+    return Container(
+      color: Colors.white,
+      child: BlocBuilder<PersonBloc, PersonState>(
+        builder: (context, state) {
+          if (state is PersonLoaded) {
+            if (state.persons.isEmpty) {
+              return const Center(
+                child: Text("Add people with the button below"),
+              );
+            }
+
+            return ListView(
+              children: [
+                for (var person in state.persons) PersonCard(person: person),
+              ],
             );
           }
 
-          return ListView(
-            children: [
-              for (var person in state.persons) PersonCard(person: person),
-            ],
+          return const Center(
+            child: CnDottedLoadingAnimation(),
           );
-        }
-
-        return const Center(
-          child: CnDottedLoadingAnimation(),
-        );
-      },
+        },
+      ),
     );
   }
 }

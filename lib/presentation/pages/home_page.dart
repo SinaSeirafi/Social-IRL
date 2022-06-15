@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             elevation: 0,
             automaticallyImplyLeading: false,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             centerTitle: false,
             title: Text(_pages[_selectedTab].text),
           ),

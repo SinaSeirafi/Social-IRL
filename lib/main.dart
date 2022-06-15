@@ -10,16 +10,16 @@ import 'presentation/bloc/social_event_bloc.dart';
 import 'presentation/pages/splash_screen_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  CnRouter.instance.routerSetup();
 
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.white, // navigation bar color
-      statusBarColor: Colors.white, // status bar color
+      statusBarColor: Colors.transparent, // status bar color
     ));
   }
 
-  CnRouter.instance.routerSetup();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {

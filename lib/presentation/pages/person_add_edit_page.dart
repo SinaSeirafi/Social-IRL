@@ -38,24 +38,27 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildNameTextField(),
-                  _buildNotesTextField(),
-                  _buildTitle("Circle"),
-                  _buildSocialCircle(),
-                  _buildTitle("Tags"),
-                  _buildNoteSuggestions(),
-                ],
+      body: Container(
+        color: Colors.white,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildNameTextField(),
+                    _buildNotesTextField(),
+                    _buildTitle("Circle"),
+                    _buildSocialCircle(),
+                    _buildTitle("Tags"),
+                    _buildNoteSuggestions(),
+                  ],
+                ),
               ),
-            ),
-            _buildButton(),
-          ],
+              _buildButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -126,7 +129,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       title: Text(editMode ? person.name : "Add Person"),
     );
@@ -141,7 +144,10 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
     return SafeArea(
       child: Container(
-        margin: EdgeInsets.only(bottom: bottomPadding),
+        margin: EdgeInsets.only(
+          bottom: bottomPadding,
+          top: bottomPadding / 2,
+        ),
         child: CnButton(
           title: "Save",
           fullWidth: true,
@@ -157,8 +163,8 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
       return;
     }
 
-    person.name = _nameController.text;
-    person.notes = _notesController.text;
+    person.name = _nameController.text.trim();
+    person.notes = _notesController.text.trim();
 
     PersonGeneralUsecases.setPersonTagsBasedOnNotes(person);
 

@@ -6,6 +6,7 @@ import 'package:social_irl/presentation/pages/person_add_edit_page.dart';
 import 'package:social_irl/presentation/pages/social_events_add_edit_page.dart';
 
 // import 'app_constants.dart';
+import '../presentation/pages/splash_screen_page.dart';
 import 'cn_helper.dart';
 
 // ----- Router and navigation
@@ -87,10 +88,9 @@ class CnRouter {
     homePageRoute: const HomePage(),
     addPersonRoute: const PersonAddEditPage(),
     addSocialEventRoute: const SocialEventAddEditPage(),
-    // addQuestionRoute: const QuestionAddEditPage(),
-    // splashScreenRoute: const SplashScreenPage(),
+    splashScreenRoute: const SplashScreenPage(),
     // onBoardingRoute: const OnBoardingPage(),
-    // errorRoute: const QuestionListPage(), // TODO: Return error page
+    errorRoute: const HomePage(), // TODO: Return error page
   };
 }
 

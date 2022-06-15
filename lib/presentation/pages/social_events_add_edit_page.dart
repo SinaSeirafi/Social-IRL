@@ -38,25 +38,28 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildTitleTextField(),
-                  _buildDatePicker(),
-                  _buildNotesTextField(),
-                  _buildTitle("Attendees"),
-                  _buildNoteAttendeesSuggestions(),
-                  _buildTitle("Tags"),
-                  _buildNoteTagsSuggestions(),
-                ],
+      body: Container(
+        color: Colors.white,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildTitleTextField(),
+                    _buildDatePicker(),
+                    _buildNotesTextField(),
+                    _buildTitle("Attendees"),
+                    _buildNoteAttendeesSuggestions(),
+                    _buildTitle("Tags"),
+                    _buildNoteTagsSuggestions(),
+                  ],
+                ),
               ),
-            ),
-            _buildFAB(),
-          ],
+              _buildFAB(),
+            ],
+          ),
         ),
       ),
 
@@ -77,7 +80,7 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     final state = context.read<PersonBloc>().state as PersonLoaded;
 
     for (var person in state.persons) {
-      suggestions.add(person.name.replaceAll(" ", "_"));
+      suggestions.add(person.name.trim().replaceAll(" ", "_"));
     }
 
     return NotesSuggestor(
@@ -139,7 +142,7 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       title: Text(editMode ? "Edit Social Event" : "Add Social Event"),
     );
@@ -154,7 +157,10 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
 
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(bottom: bottomPadding),
+        padding: EdgeInsets.only(
+          bottom: bottomPadding,
+          top: bottomPadding / 2,
+        ),
         child: CnButton(
           title: "Save",
           fullWidth: true,
@@ -172,8 +178,8 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
 
     if (!_validateEventAttendees()) return;
 
-    socialEvent.title = _titleController.text;
-    socialEvent.notes = _notesController.text;
+    socialEvent.title = _titleController.text.trim();
+    socialEvent.notes = _notesController.text.trim();
 
     SocialEventGeneralUsecases.setSocialEventTagsBasedOnNotes(socialEvent);
 
