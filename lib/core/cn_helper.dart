@@ -59,6 +59,12 @@ class Helper {
     return null;
   }
 
+  double doubleOkForced(var data) {
+    var res = doubleOk(data);
+    if (res == null) throw "'$data' cannot be parsed as double";
+    return res;
+  }
+
   int? intOk(var data) {
     if (data == null) return null;
 
@@ -74,6 +80,23 @@ class Helper {
       return data.toInt();
     }
     return null;
+  }
+
+  int intOkForced(var data) {
+    var res = intOk(data);
+    if (res == null) throw "'$data' cannot be parsed as int";
+    return res;
+  }
+
+  DateTime? dateTimeOK(var data) {
+    return DateTime.tryParse(data);
+  }
+
+  /// Either DateTime or error
+  DateTime dateTimeOkForced(var data) {
+    var res = dateTimeOK(data);
+    if (res == null) throw "'$data' cannot be parsed as DateTime";
+    return res;
   }
 
   bool? boolOk(var data) {
@@ -99,6 +122,12 @@ class Helper {
     return null;
   }
 
+  bool boolOkForced(var data) {
+    var res = boolOk(data);
+    if (res == null) throw "'$data' cannot be parsed as bool";
+    return res;
+  }
+
   String? strOk(var data) {
     if (data == null) return null;
 
@@ -107,6 +136,12 @@ class Helper {
     } else {
       return data.toString();
     }
+  }
+
+  String strOkForced(var data) {
+    var res = strOk(data);
+    if (res == null) throw "'$data' cannot be parsed as String";
+    return res;
   }
 
   double? roundDouble(double? value) {
