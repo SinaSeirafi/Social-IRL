@@ -187,9 +187,12 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
       // Updating the data from temp
       widget.socialEvent!.copyDataFromSocialEvent(socialEvent);
 
-      context
-          .read<SocialEventBloc>()
-          .add(EditSocialEventEvent(widget.socialEvent!));
+      // FIXME: add removed people to [removedPeople]
+
+      context.read<SocialEventBloc>().add(EditSocialEventEvent(
+            widget.socialEvent!,
+            removedPeople: removedPeople,
+          ));
 
       Navigator.pop(context);
 
@@ -235,6 +238,8 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+
+  List<Person> removedPeople = [];
 
   void _setFieldValuesBasedOnInputSocialEvent() {
     socialEvent.copyDataFromSocialEvent(widget.socialEvent!);

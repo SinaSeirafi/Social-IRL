@@ -81,7 +81,15 @@ class SocialEventCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildAttendees(),
+        Row(
+          children: [
+            Icon(
+              socialEvent.attendees.length > 1 ? Icons.people : Icons.person,
+            ),
+            const SizedBox(width: 8),
+            _buildAttendees(),
+          ],
+        ),
         TagsInCardWrap(tags: socialEvent.tags),
       ],
     );

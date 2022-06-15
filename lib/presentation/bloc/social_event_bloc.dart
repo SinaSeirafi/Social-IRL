@@ -42,7 +42,7 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
 
       emit(
         _eitherLoadedOrErrorState(
-          await _addSocialEventUsecase(Params(event.socialEvent)),
+          await _addSocialEventUsecase(SocialEventParams(event.socialEvent)),
           "Add socialEvent list error.",
         ),
       );
@@ -53,7 +53,10 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
 
       emit(
         _eitherLoadedOrErrorState(
-          await _editSocialEventUsecase(Params(event.socialEvent)),
+          await _editSocialEventUsecase(SocialEventParams(
+            event.socialEvent,
+            removedPeople: event.removedPeople,
+          )),
           "Edit socialEvent list error.",
         ),
       );
@@ -76,32 +79,32 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
 
       emit(
         _eitherLoadedOrErrorState(
-          await _removeSocialEventUsecase(Params(event.socialEvent)),
+          await _removeSocialEventUsecase(SocialEventParams(event.socialEvent)),
           "Delete socialEvent list error.",
         ),
       );
     });
 
-    /// When a [Person] is removed from a specific social event
-    on<RemovePersonFromSocialEvent>((event, emit) async {
-      // Remove event from person and call EditPerson
-      event.person.socialEvents.remove(event.socialEvent);
+    // /// When a [Person] is removed from a specific social event
+    // on<RemovePersonFromSocialEvent>((event, emit) async {
+    //   // Remove event from person and call EditPerson
+    //   event.person.socialEvents.remove(event.socialEvent);
 
-      // handles its own loading, no need to await it
-      event.context.read<PersonBloc>().add(EditPersonEvent(event.person));
+    //   // handles its own loading, no need to await it
+    //   event.context.read<PersonBloc>().add(EditPersonEvent(event.person));
 
-      // Remove person from event attendees and call EditSocialEvent
-      event.socialEvent.attendees.remove(event.person);
+    //   // Remove person from event attendees and call EditSocialEvent
+    //   event.socialEvent.attendees.remove(event.person);
 
-      _emitLoading(emit);
+    //   _emitLoading(emit);
 
-      emit(
-        _eitherLoadedOrErrorState(
-          await _editSocialEventUsecase(Params(event.socialEvent)),
-          "Edit socialEvent list error.",
-        ),
-      );
-    });
+    //   emit(
+    //     _eitherLoadedOrErrorState(
+    //       await _editSocialEventUsecase(Params(event.socialEvent)),
+    //       "Edit socialEvent list error.",
+    //     ),
+    //   );
+    // });
 
     /// When a [Person] is removed, remove it from all of the social events
     /// Also, if a [SocialEvent] only included that person, it should be removed as well

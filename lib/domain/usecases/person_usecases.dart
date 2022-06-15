@@ -2,9 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/core/extract_data_from_notes.dart';
+import 'package:social_irl/domain/entities/social_event.dart';
 import 'package:social_irl/domain/entities/tag.dart';
 import 'package:social_irl/presentation/widgets/notes_suggester.dart';
 
+import '../../core/cn_helper.dart';
 import '../../core/failures.dart';
 import '../../core/usecases.dart';
 import '../../data/repositories/person_repository.dart';
@@ -49,6 +51,8 @@ class EditPerson extends PersonUsecase<List<Person>, PersonParams> {
   Future<Either<Failure, List<Person>>> call(PersonParams params) async {
     params.person.modifiedAt = DateTime.now();
 
+    params.person.updateNextAndLastSocialEventTimes();
+
     return await _repository.editPerson(params.person);
   }
 }
@@ -90,5 +94,64 @@ class PersonGeneralUsecases {
       person.tags.add(tag);
       allPersonTags.add(tag);
     }
+  }
+
+  static String timeSinceLastEvent(Person person) {
+    String startText = "Last Event: ";
+
+    if (person.lastSocialEvent == null) return startText + "Never 😬";
+
+    return startText + (h.timePassed(person.lastSocialEvent!) ?? "Just Now");
+  }
+
+  /// Updaing [nextSocialEvent] and [lastSocialEvent] values
+  ///
+  /// This can be called after adding, editing, or deleting a social event
+  static void updateNextAndLastSocialEventTimes(Person person) {
+    if (person.socialEvents.isEmpty) {
+      person.nextSocialEvent = null;
+      person.lastSocialEvent = null;
+    }
+
+    for (var event in person.socialEvents) {
+      if (event.startDate.isAfter(DateTime.now())) {
+        if (person.nextSocialEvent == null ||
+            event.startDate.isBefore(person.nextSocialEvent!)) {
+          person.nextSocialEvent = event.startDate;
+        }
+        continue;
+      }
+
+      if (person.lastSocialEvent == null ||
+          event.startDate.isAfter(person.lastSocialEvent!)) {
+        person.lastSocialEvent = event.startDate;
+      }
+    }
+  }
+
+  static final EditPerson _editPerson = EditPerson();
+
+  static Future addSocialEventToPerson(
+      Person person, SocialEvent socialEvent) async {
+    person.socialEvents.add(socialEvent);
+
+    await _editPerson(PersonParams(person));
+  }
+
+  static Future updatePersonSocialEvent(
+      Person person, SocialEvent socialEvent) async {
+    int index = person.socialEvents
+        .indexWhere((element) => element.id == socialEvent.id);
+
+    person.socialEvents[index] = socialEvent;
+
+    await _editPerson(PersonParams(person));
+  }
+
+  static Future removeSocialEventFromPerson(
+      Person person, SocialEvent socialEvent) async {
+    person.socialEvents.removeWhere((element) => element.id == socialEvent.id);
+
+    await _editPerson(PersonParams(person));
   }
 }

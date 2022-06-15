@@ -51,18 +51,11 @@ class PersonCard extends StatelessWidget {
     );
   }
 
-  String _timePassed() {
-    if (person.socialEvents.isEmpty) return "Never 😬";
-
-    return h.timePassed(person.socialEvents.last.startDate) ??
-        "Less than a second ago! That's a record! :))";
-  }
-
   Widget _buildSubtitle(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Last Event: " + _timePassed()),
+        Text(person.timeSinceLastEvent),
         TagsInCardWrap(tags: person.tags),
       ],
     );

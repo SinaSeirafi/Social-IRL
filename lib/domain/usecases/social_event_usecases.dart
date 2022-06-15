@@ -1,15 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_irl/core/app_constants.dart';
 
+import '../../core/app_constants.dart';
 import '../../core/extract_data_from_notes.dart';
 import '../../core/failures.dart';
 import '../../core/usecases.dart';
 import '../../data/repositories/social_event_repository.dart';
-import '../../presentation/bloc/person_bloc.dart';
-import '../../presentation/widgets/cn_widgets/cn_message.dart';
 import '../../presentation/widgets/notes_suggester.dart';
 import '../entities/person.dart';
 import '../entities/social_event.dart';
@@ -20,19 +17,22 @@ abstract class SocialEventUseCase<Type, Params> {
   Future<Either<Failure, Type>> call(Params params);
 }
 
-class Params extends Equatable {
+class SocialEventParams extends Equatable {
   final SocialEvent socialEvent;
 
-  const Params(this.socialEvent);
+  /// People that are removed from the event while editing the event
+  final List<Person>? removedPeople;
+
+  const SocialEventParams(this.socialEvent, {this.removedPeople});
 
   @override
   List<Object?> get props => [socialEvent];
 }
 
+final SocialEventRepository _repository = SocialEventRepository.instance;
+
 class GetSocialEventList
     extends SocialEventUseCase<List<SocialEvent>, NoParams> {
-  final SocialEventRepository _repository = SocialEventRepository.instance;
-
   @override
   Future<Either<Failure, List<SocialEvent>>> call(NoParams params) async {
     return await _repository.getSocialEventList();
@@ -40,20 +40,16 @@ class GetSocialEventList
 }
 
 class AddSocialEventUsecase
-    extends SocialEventUseCase<List<SocialEvent>, Params> {
-  final SocialEventRepository _repository = SocialEventRepository.instance;
-
+    extends SocialEventUseCase<List<SocialEvent>, SocialEventParams> {
   @override
-  Future<Either<Failure, List<SocialEvent>>> call(Params params) async {
+  Future<Either<Failure, List<SocialEvent>>> call(
+      SocialEventParams params) async {
     params.socialEvent.createdAt =
         params.socialEvent.modifiedAt = DateTime.now();
 
     for (var person in params.socialEvent.attendees) {
-      person.socialEvents.add(params.socialEvent);
-
-      EditPerson editPerson = EditPerson();
-
-      await editPerson(PersonParams(person));
+      await PersonGeneralUsecases.addSocialEventToPerson(
+          person, params.socialEvent);
     }
 
     return await _repository.addSocialEvent(params.socialEvent);
@@ -61,26 +57,41 @@ class AddSocialEventUsecase
 }
 
 class EditSocialEventUsecase
-    extends SocialEventUseCase<List<SocialEvent>, Params> {
-  final SocialEventRepository _repository = SocialEventRepository.instance;
-
+    extends SocialEventUseCase<List<SocialEvent>, SocialEventParams> {
   @override
-  Future<Either<Failure, List<SocialEvent>>> call(Params params) async {
+  Future<Either<Failure, List<SocialEvent>>> call(
+      SocialEventParams params) async {
     params.socialEvent.modifiedAt = DateTime.now();
+
+    if (params.removedPeople != null) {
+      for (var person in params.removedPeople!) {
+        await PersonGeneralUsecases.removeSocialEventFromPerson(
+            person, params.socialEvent);
+      }
+    }
+
+    for (var person in params.socialEvent.attendees) {
+      await PersonGeneralUsecases.updatePersonSocialEvent(
+          person, params.socialEvent);
+    }
 
     return await _repository.editSocialEvent(params.socialEvent);
   }
 }
 
 class RemoveSocialEventUsecase
-    extends SocialEventUseCase<List<SocialEvent>, Params> {
-  final SocialEventRepository _repository = SocialEventRepository.instance;
-
+    extends SocialEventUseCase<List<SocialEvent>, SocialEventParams> {
   @override
-  Future<Either<Failure, List<SocialEvent>>> call(Params params) async {
+  Future<Either<Failure, List<SocialEvent>>> call(
+      SocialEventParams params) async {
     params.socialEvent.modifiedAt = DateTime.now();
 
     params.socialEvent.isDeleted = true;
+
+    for (var person in params.socialEvent.attendees) {
+      await PersonGeneralUsecases.removeSocialEventFromPerson(
+          person, params.socialEvent);
+    }
 
     return await _repository.deleteSocialEvent(params.socialEvent);
   }

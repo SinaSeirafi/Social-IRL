@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/cn_helper.dart';
 import 'package:social_irl/domain/entities/social_event.dart';
 import 'package:social_irl/domain/usecases/person_usecases.dart';
 
@@ -18,6 +19,14 @@ class Person extends Equatable {
   late List<PersonTag> tags;
 
   late List<SocialEvent> socialEvents;
+
+  // TODO Should we save it like this in the database? Or calculate this every time
+
+  /// Start time for the last social event that included the user
+  DateTime? lastSocialEvent;
+
+  /// Start time for the next social event that includes the user
+  DateTime? nextSocialEvent;
 
   /// Default
   bool isDeleted = false;
@@ -51,10 +60,16 @@ class Person extends Equatable {
         modifiedAt
       ];
 
+  String get nameAndCircleEmoji => name + " " + socialCircle.title;
+
   void copyDataFromPerson(Person person) =>
       PersonGeneralUsecases.copyDataFromPerson(person, this);
 
-  String get nameAndCircleEmoji => name + " " + socialCircle.title;
+  String get timeSinceLastEvent =>
+      PersonGeneralUsecases.timeSinceLastEvent(this);
+
+  void updateNextAndLastSocialEventTimes() =>
+      PersonGeneralUsecases.updateNextAndLastSocialEventTimes(this);
 }
 
 class SocialCircle extends Equatable {
