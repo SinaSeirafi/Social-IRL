@@ -25,9 +25,12 @@ class AddSocialEventEvent extends SocialEventEvent {
 
 class EditSocialEventEvent extends SocialEventEvent {
   final SocialEvent socialEvent;
-  final List<Person>? removedPeople;
+  final List<Person> removedPeople;
 
-  const EditSocialEventEvent(this.socialEvent, {this.removedPeople});
+  const EditSocialEventEvent(
+    this.socialEvent, {
+    this.removedPeople = const [],
+  });
 
   @override
   List<Object> get props => [socialEvent];

@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:social_irl/domain/usecases/person_usecases.dart';
 import 'package:social_irl/presentation/bloc/person_bloc.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';

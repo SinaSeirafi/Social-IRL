@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:social_irl/core/cn_helper.dart';
-import 'package:social_irl/domain/entities/social_event.dart';
-import 'package:social_irl/domain/usecases/person_usecases.dart';
 
+import '../usecases/person_usecases.dart';
+import 'social_event.dart';
 import 'tag.dart';
 
 /// --- Later Additions

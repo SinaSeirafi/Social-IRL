@@ -63,16 +63,15 @@ class EditSocialEventUsecase
       SocialEventParams params) async {
     params.socialEvent.modifiedAt = DateTime.now();
 
-    if (params.removedPeople != null) {
-      for (var person in params.removedPeople!) {
-        await PersonGeneralUsecases.removeSocialEventFromPerson(
-            person, params.socialEvent);
-      }
+    // In EditEventEvent removed people won't be null
+    for (var person in params.removedPeople!) {
+      await PersonGeneralUsecases.removeSocialEventFromPerson(
+          person, params.socialEvent);
     }
 
     for (var person in params.socialEvent.attendees) {
-      await PersonGeneralUsecases.updatePersonSocialEvent(
-          person, params.socialEvent);
+      // Add or Update
+      PersonGeneralUsecases.handleSocialEventEdit(person, params.socialEvent);
     }
 
     return await _repository.editSocialEvent(params.socialEvent);

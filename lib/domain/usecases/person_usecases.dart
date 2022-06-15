@@ -150,8 +150,27 @@ class PersonGeneralUsecases {
 
   static Future removeSocialEventFromPerson(
       Person person, SocialEvent socialEvent) async {
+    if (person.lastSocialEvent == socialEvent.startDate) {
+      person.lastSocialEvent = null;
+    }
+
+    if (person.nextSocialEvent == socialEvent.startDate) {
+      person.nextSocialEvent = null;
+    }
+
     person.socialEvents.removeWhere((element) => element.id == socialEvent.id);
 
     await _editPerson(PersonParams(person));
+  }
+
+  /// If Person already has the event, update it
+  /// If not, add it
+  static Future handleSocialEventEdit(
+      Person person, SocialEvent socialEvent) async {
+    if (person.socialEvents.any((element) => element.id == socialEvent.id)) {
+      await updatePersonSocialEvent(person, socialEvent);
+    } else {
+      await addSocialEventToPerson(person, socialEvent);
+    }
   }
 }

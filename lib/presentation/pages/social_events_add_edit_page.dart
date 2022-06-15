@@ -178,6 +178,11 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
 
     if (!_validateEventAttendees()) return;
 
+    // Should be handled in the validation above
+    if (socialEvent.attendees.isEmpty) {
+      throw "Empty Attendees is not acceptable!";
+    }
+
     socialEvent.title = _titleController.text.trim();
     socialEvent.notes = _notesController.text.trim();
 
@@ -187,11 +192,11 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
       // Updating the data from temp
       widget.socialEvent!.copyDataFromSocialEvent(socialEvent);
 
-      // FIXME: add removed people to [removedPeople]
+      _handleRemovedPeopleList();
 
       context.read<SocialEventBloc>().add(EditSocialEventEvent(
             widget.socialEvent!,
-            removedPeople: removedPeople,
+            removedPeople: _removedPeople,
           ));
 
       Navigator.pop(context);
@@ -199,22 +204,12 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
       return;
     }
 
-    if (socialEvent.attendees.isEmpty) {
-      throw "Empty Attendees is not acceptable!";
-    }
-
     // Add SocialEvent Mode
+
     context.read<SocialEventBloc>().add(AddSocialEventEvent(socialEvent));
 
     // FIXME: delay driven development?! Should handle loading state and events
     await Future.delayed(const Duration(milliseconds: 300));
-
-    // To get the newly created question with the correct ID (based on database)
-    final state = context.read<SocialEventBloc>().state as SocialEventLoaded;
-
-    SocialEvent socialEventFromDB = state.events.last;
-
-    // context.read<SocialEventBloc>().add(UpdateSocialEventScoreEvent(socialEventFromDB));
 
     Navigator.pop(context);
   }
@@ -222,24 +217,31 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   bool _validateEventAttendees() {
     final state = context.read<PersonBloc>().state as PersonLoaded;
 
-    String? test = SocialEventGeneralUsecases.validateEventAttendees(
+    String? _validateAttendeesErrorMessage =
+        SocialEventGeneralUsecases.validateEventAttendees(
       state.persons,
       socialEvent,
       _notesController,
     );
 
-    if (test != null) {
-      showCnMessage(context, text: test);
+    if (_validateAttendeesErrorMessage != null) {
+      showCnMessage(context, text: _validateAttendeesErrorMessage);
       return false;
     }
 
     return true;
   }
 
+  /// Removing the attendees that have remained in the event from this list
+  /// Every Person that remains in this list, is considered removed form the event attendees
+  _handleRemovedPeopleList() {
+    for (var person in socialEvent.attendees) {
+      _removedPeople.remove(person);
+    }
+  }
+
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
-
-  List<Person> removedPeople = [];
 
   void _setFieldValuesBasedOnInputSocialEvent() {
     socialEvent.copyDataFromSocialEvent(widget.socialEvent!);
@@ -248,9 +250,14 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     _notesController.text = socialEvent.notes;
 
     _attendees = socialEvent.attendees;
+
+    // Setting the removed people as all of the current attendees
+    // After edit, removing the remaining attendees from this list
+    _removedPeople = socialEvent.attendees;
   }
 
   List<Person> _attendees = [];
+  List<Person> _removedPeople = [];
 
   @override
   void initState() {

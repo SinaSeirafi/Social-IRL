@@ -57,10 +57,23 @@ class SocialEventCard extends StatelessWidget {
   }
 
   Widget _buildSubtitle(context) {
+    Widget _buildIcon() {
+      return SizedBox(
+        height: CnButton.buttonHeight,
+        width: 25,
+        child: Center(
+          child: Icon(
+            socialEvent.attendees.length > 1 ? Icons.people : Icons.person,
+          ),
+        ),
+      );
+    }
+
     _buildAttendees() {
       return Wrap(
         spacing: 8,
         children: [
+          _buildIcon(),
           for (var person in socialEvent.attendees)
             CnButton(
               elevation: 1,
@@ -81,15 +94,7 @@ class SocialEventCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Icon(
-              socialEvent.attendees.length > 1 ? Icons.people : Icons.person,
-            ),
-            const SizedBox(width: 8),
-            _buildAttendees(),
-          ],
-        ),
+        _buildAttendees(),
         TagsInCardWrap(tags: socialEvent.tags),
       ],
     );
