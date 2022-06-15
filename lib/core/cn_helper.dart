@@ -31,17 +31,6 @@ class Helper {
   static final Helper _helper = Helper();
   static Helper get instance => _helper;
 
-  String pycheck(String? string, String defaultv) {
-    if (string == null || string.trim().isEmpty) {
-      return defaultv;
-    }
-    return string;
-  }
-
-  String encryptPassword(String password) {
-    return password;
-  }
-
   double? doubleOk(var data) {
     if (data == null) return null;
 
@@ -89,6 +78,8 @@ class Helper {
   }
 
   DateTime? dateTimeOK(var data) {
+    if (data == null) return null;
+
     return DateTime.tryParse(data);
   }
 
@@ -97,6 +88,12 @@ class Helper {
     var res = dateTimeOK(data);
     if (res == null) throw "'$data' cannot be parsed as DateTime";
     return res;
+  }
+
+  String? dateTimeToString(DateTime? dateTime) {
+    if (dateTime == null) return null;
+
+    return dateTime.toIso8601String();
   }
 
   bool? boolOk(var data) {
@@ -140,7 +137,9 @@ class Helper {
 
   String strOkForced(var data) {
     var res = strOk(data);
-    if (res == null) throw "'$data' cannot be parsed as String";
+    if (res == null || res.trim().isEmpty) {
+      throw "Trimmed '$data' either empty or cannot be parsed as String";
+    }
     return res;
   }
 
@@ -247,25 +246,6 @@ class Helper {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
 
-  String normalizePriceString(
-    double price, {
-    int decimalPoints = 3,
-    int reduceDecimalPointsTo = 0,
-  }) {
-    // return showLessDecimalsDouble(price).toString();
-
-    // ---- the client didn't want this feature
-
-    // double priceValue = price;
-
-    // for (var i = 0; i < decimalPoints - reduceDecimalPointsTo; i++) {
-    //   if (priceValue.toStringAsFixed(decimalPoints).endsWith('0'))
-    //     decimalPoints--;
-    // }
-
-    return price.toStringAsFixed(decimalPoints);
-  }
-
   String? timePassed(DateTime dateTime) {
     Duration difference = -dateTime.difference(DateTime.now());
 
@@ -321,6 +301,7 @@ class Helper {
     return TextDirection.ltr;
   }
 }
+
 //   String localizedAndNormalizedPriceString(
 //     double price, {
 //     int decimalPoints = 3,
@@ -603,3 +584,35 @@ class Helper {
 
 //   return searchresult;
 // }
+
+class OldHelper {
+  String pycheck(String? string, String defaultv) {
+    if (string == null || string.trim().isEmpty) {
+      return defaultv;
+    }
+    return string;
+  }
+
+  String encryptPassword(String password) {
+    return password;
+  }
+
+  String normalizePriceString(
+    double price, {
+    int decimalPoints = 3,
+    int reduceDecimalPointsTo = 0,
+  }) {
+    // return showLessDecimalsDouble(price).toString();
+
+    // ---- the client didn't want this feature
+
+    // double priceValue = price;
+
+    // for (var i = 0; i < decimalPoints - reduceDecimalPointsTo; i++) {
+    //   if (priceValue.toStringAsFixed(decimalPoints).endsWith('0'))
+    //     decimalPoints--;
+    // }
+
+    return price.toStringAsFixed(decimalPoints);
+  }
+}
