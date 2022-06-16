@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/app_constants.dart';
 
 import '../../core/cn_helper.dart';
 import '../usecases/person_usecases.dart';
@@ -44,6 +45,8 @@ class Person extends Equatable {
     createdAt = modifiedAt = DateTime.now();
     socialEvents = [];
     tags = [];
+
+    allPeople.add(this);
   }
 
   @override

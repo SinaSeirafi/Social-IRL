@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:social_irl/data/models/person_model.dart';
 import 'package:social_irl/domain/entities/person.dart';
-import 'package:social_irl/domain/entities/social_event.dart';
 import 'package:social_irl/domain/entities/tag.dart';
 
 void main() {
@@ -63,41 +63,8 @@ void main() {
     _checkEquality(false);
 
     _checkToAndFromJson();
-  });
 
-  test('Person Model Complete Json save and retrieval Equatable test', () {
-    PersonModel test = PersonModel(
-      id: 1,
-      name: "name",
-      socialCircle: const SocialCircle(id: 1, title: "title"),
-    );
-
-    late PersonModel returned;
-
-    _checkEquality(bool expectVal) {
-      expect(returned == test, expectVal);
-    }
-
-    _checkToAndFromJson() {
-      var json = test.toJson();
-
-      returned = PersonModel.fromJson(
-        json,
-        complete: true, // Includes Social Events
-      );
-
-      _checkEquality(true);
-    }
-
-    _checkToAndFromJson();
-
-    _checkEquality(true);
-
-    test.socialEvents.add(SocialEvent(
-      id: 1,
-      startDate: DateTime.now(),
-      attendees: [test.toPerson()],
-    ));
+    test.socialEventsIds.add(1);
 
     _checkEquality(false);
 

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/core/cn_helper.dart';
 import 'package:social_irl/data/models/social_event_model.dart';
 
@@ -16,7 +17,7 @@ class PersonModel extends Equatable {
   String notes;
   late List<PersonTag> tags;
 
-  late List<SocialEvent> socialEvents;
+  late List<int> socialEventsIds;
 
   // TODO Should we save it like this in the database? Or calculate this every time
 
@@ -40,7 +41,7 @@ class PersonModel extends Equatable {
     this.notes = "",
   }) {
     createdAt = modifiedAt = DateTime.now();
-    socialEvents = [];
+    socialEventsIds = [];
     tags = [];
   }
 
@@ -52,7 +53,7 @@ class PersonModel extends Equatable {
         potentialForCircle,
         notes,
         tags,
-        socialEvents,
+        socialEventsIds,
         lastSocialEvent,
         nextSocialEvent,
         createdAt,
@@ -60,17 +61,7 @@ class PersonModel extends Equatable {
         isDeleted,
       ];
 
-  /// Data Needed for [PersonListPage]
-  ///
-  /// Person ID
-  /// Person Name
-  /// Social Circle
-  /// LastEventDate
-  /// NextEventDate
-  /// Person Tags
-  ///
-  /// Missing [socialEvents] field in incomplete mode
-  Map<String, dynamic> toJson({bool complete = true}) {
+  Map<String, dynamic> toJson() {
     List _tags = [for (var tag in tags) tag.toJson()];
 
     Map<String, dynamic>? potentialForCircleString;
@@ -78,10 +69,7 @@ class PersonModel extends Equatable {
       potentialForCircleString = potentialForCircle!.toJson();
     }
 
-    List _socialEvents = [
-      for (var event in socialEvents)
-        SocialEventModel.fromSocialEvent(event).toJson(complete: !complete)
-    ];
+    List _socialEventIds = [for (var eventId in socialEventsIds) eventId];
 
     return {
       'id': id,
@@ -95,14 +83,11 @@ class PersonModel extends Equatable {
       'isDeleted': isDeleted,
       'tags': _tags,
       'notes': notes,
-      'socialEvents': _socialEvents,
+      'socialEventIds': _socialEventIds,
     };
   }
 
-  factory PersonModel.fromJson(
-    Map<String, dynamic> data, {
-    bool complete = false,
-  }) {
+  factory PersonModel.fromJson(Map<String, dynamic> data) {
     SocialCircle socialCircle = SocialCircle.fromJson(data['socialCircle']);
 
     SocialCircle? potentialForCircle;
@@ -130,12 +115,10 @@ class PersonModel extends Equatable {
 
     temp.tags = [for (var tag in data['tags']) PersonTag.fromJson(tag)];
 
-    if (complete) {
-      temp.socialEvents = [
-        for (var event in data['socialEvents'])
-          SocialEventModel.fromJson(event).toSocialEvent()
-      ];
-    }
+    temp.socialEventsIds = [
+      for (var eventId in data['socialEventIds']) h.intOkForced(eventId)
+      // SocialEventModel.fromJson(eventId).toSocialEvent()
+    ];
 
     return temp;
   }
@@ -155,7 +138,10 @@ class PersonModel extends Equatable {
     );
 
     temp.tags = [for (var tag in tags) tag];
-    temp.socialEvents = [for (var event in socialEvents) event];
+    temp.socialEvents = [
+      for (var eventId in socialEventsIds)
+        allSocialEvents.firstWhere((element) => element.id == eventId)
+    ];
 
     temp.lastSocialEvent = lastSocialEvent;
     temp.nextSocialEvent = nextSocialEvent;
@@ -177,7 +163,7 @@ class PersonModel extends Equatable {
     );
 
     temp.tags = [for (var tag in person.tags) tag];
-    temp.socialEvents = [for (var event in person.socialEvents) event];
+    temp.socialEventsIds = [for (var event in person.socialEvents) event.id];
 
     temp.lastSocialEvent = person.lastSocialEvent;
     temp.nextSocialEvent = person.nextSocialEvent;

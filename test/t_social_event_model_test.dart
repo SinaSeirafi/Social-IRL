@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:social_irl/data/models/social_event_model.dart';
-import 'package:social_irl/domain/entities/person.dart';
 import 'package:social_irl/domain/entities/tag.dart';
 
 void main() {
@@ -10,7 +9,7 @@ void main() {
       id: 1,
       startDate: DateTime.now(),
       // ignore: prefer_const_literals_to_create_immutables
-      attendees: [],
+      attendeesIds: [],
     );
 
     late SocialEventModel returned;
@@ -59,13 +58,7 @@ void main() {
 
     _checkToAndFromJson();
 
-    test.attendees.add(
-      Person(
-        id: 1,
-        name: "name",
-        socialCircle: const SocialCircle(id: 1, title: "title"),
-      ),
-    );
+    test.attendeesIds.add(1);
 
     _checkEquality(false);
 

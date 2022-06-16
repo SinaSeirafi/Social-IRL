@@ -15,8 +15,7 @@ bool demoMode = false;
 Person? selectedPerson;
 SocialEvent? selectedSocialEvent;
 
-// feeling tired, might remove later
-Set<Person> allPersons = {};
+Set<Person> allPeople = {};
 Set<SocialEvent> allSocialEvents = {};
 Set<PersonTag> allPersonTags = {};
 Set<SocialEventTag> allSocialEventTags = {};

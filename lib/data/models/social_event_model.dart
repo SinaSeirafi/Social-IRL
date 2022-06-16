@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/core/cn_helper.dart';
 import 'package:social_irl/data/models/person_model.dart';
 import 'package:social_irl/domain/entities/social_event.dart';
@@ -13,7 +14,7 @@ class SocialEventModel extends Equatable {
   DateTime startDate;
   DateTime? endDate;
 
-  List<Person> attendees;
+  List<int> attendeesIds;
 
   String notes;
   late List<SocialEventTag> tags;
@@ -28,7 +29,7 @@ class SocialEventModel extends Equatable {
     this.title = "",
     required this.startDate,
     this.endDate,
-    required this.attendees,
+    required this.attendeesIds,
     this.notes = "",
   }) {
     createdAt = modifiedAt = DateTime.now();
@@ -41,7 +42,7 @@ class SocialEventModel extends Equatable {
         title,
         startDate,
         endDate,
-        attendees,
+        attendeesIds,
         notes,
         tags,
         createdAt,
@@ -52,10 +53,7 @@ class SocialEventModel extends Equatable {
   Map<String, dynamic> toJson({bool complete = true}) {
     List _tags = [for (var tag in tags) tag.toJson()];
 
-    List _attendees = [
-      for (var person in attendees)
-        PersonModel.fromPerson(person).toJson(complete: complete)
-    ];
+    List _attendeesIds = [for (var personId in attendeesIds) personId];
 
     return {
       'id': id,
@@ -64,7 +62,7 @@ class SocialEventModel extends Equatable {
       'endDate': h.dateTimeToString(endDate),
       'createdAt': h.dateTimeToString(createdAt),
       'modifiedAt': h.dateTimeToString(modifiedAt),
-      'attendees': _attendees,
+      'attendeesIds': _attendeesIds,
       'notes': notes,
       'tags': _tags,
       'isDeleted': isDeleted,
@@ -75,9 +73,8 @@ class SocialEventModel extends Equatable {
     /// in case person.socialEvents was required,
     /// a mode should be developed that prevents loop
     /// (person getting socialEvent getting person ...)
-    List<Person> _attendees = [
-      for (var person in data['attendees'])
-        PersonModel.fromJson(person).toPerson()
+    List<int> _attendeesIds = [
+      for (var personId in data['attendeesIds']) h.intOkForced(personId)
     ];
 
     SocialEventModel temp = SocialEventModel(
@@ -86,7 +83,7 @@ class SocialEventModel extends Equatable {
       notes: h.strOk(data['notes']) ?? "",
       startDate: h.dateTimeOkForced(data['startDate']),
       endDate: h.dateTimeOk(data['endDate']),
-      attendees: _attendees,
+      attendeesIds: _attendeesIds,
     );
 
     temp.tags = [for (var tag in data['tags']) SocialEventTag.fromJson(tag)];
@@ -110,7 +107,10 @@ class SocialEventModel extends Equatable {
       title: title,
       startDate: startDate,
       endDate: endDate,
-      attendees: [for (var person in attendees) person],
+      attendees: [
+        for (var personId in attendeesIds)
+          allPeople.firstWhere((element) => element.id == personId)
+      ],
       notes: notes,
     );
 
@@ -129,7 +129,7 @@ class SocialEventModel extends Equatable {
       title: event.title,
       startDate: event.startDate,
       endDate: event.endDate,
-      attendees: [for (var person in event.attendees) person],
+      attendeesIds: [for (var person in event.attendees) person.id],
       notes: event.notes,
     );
 

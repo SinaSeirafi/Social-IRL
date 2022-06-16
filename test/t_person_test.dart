@@ -24,15 +24,10 @@ void main() {
     _checkToAndFromPersonModel() {
       PersonModel model = PersonModel.fromPerson(test);
 
-      // var json = model.toJson();
-      // model = PersonModel.fromJson(json, complete: true);
+      var json = model.toJson();
+      model = PersonModel.fromJson(json);
 
       returned = model.toPerson();
-
-      // if (test.socialEvents.isNotEmpty) {
-      //   print(test.socialEvents);
-      //   print(returned.socialEvents);
-      // }
 
       _checkEquality(true);
     }
