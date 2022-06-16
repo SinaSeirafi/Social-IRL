@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:social_irl/core/cn_helper.dart';
+import 'package:social_irl/data/models/social_event_model.dart';
 
 import '../../domain/entities/person.dart';
 import '../../domain/entities/social_event.dart';
@@ -12,7 +13,7 @@ class PersonModel extends Equatable {
   SocialCircle socialCircle;
   SocialCircle? potentialForCircle;
 
-  String? notes;
+  String notes;
   late List<PersonTag> tags;
 
   late List<SocialEvent> socialEvents;
@@ -36,7 +37,7 @@ class PersonModel extends Equatable {
     required this.name,
     required this.socialCircle,
     this.potentialForCircle,
-    this.notes,
+    this.notes = "",
   }) {
     createdAt = modifiedAt = DateTime.now();
     socialEvents = [];
@@ -68,15 +69,19 @@ class PersonModel extends Equatable {
   /// NextEventDate
   /// Person Tags
   ///
-  /// Missing fields:
-  /// [notes] and [socialEvents]
-  Map<String, dynamic> toJsonIncomplete() {
-    List tagsJson = [for (var tag in tags) tag.toJson()];
+  /// Missing [socialEvents] field in incomplete mode
+  Map<String, dynamic> toJson({bool complete = true}) {
+    List _tags = [for (var tag in tags) tag.toJson()];
 
     Map<String, dynamic>? potentialForCircleString;
     if (potentialForCircle != null) {
       potentialForCircleString = potentialForCircle!.toJson();
     }
+
+    List _socialEvents = [
+      for (var event in socialEvents)
+        SocialEventModel.fromSocialEvent(event).toJson(complete: !complete)
+    ];
 
     return {
       'id': id,
@@ -88,11 +93,16 @@ class PersonModel extends Equatable {
       'createdAt': h.dateTimeToString(createdAt),
       'modifiedAt': h.dateTimeToString(modifiedAt),
       'isDeleted': isDeleted,
-      'tags': tagsJson,
+      'tags': _tags,
+      'notes': notes,
+      'socialEvents': _socialEvents,
     };
   }
 
-  static PersonModel fromJsonIncomplete(Map<String, dynamic> data) {
+  factory PersonModel.fromJson(
+    Map<String, dynamic> data, {
+    bool complete = false,
+  }) {
     SocialCircle socialCircle = SocialCircle.fromJson(data['socialCircle']);
 
     SocialCircle? potentialForCircle;
@@ -103,13 +113,14 @@ class PersonModel extends Equatable {
     PersonModel temp = PersonModel(
       id: h.intOkForced(data['id']),
       name: h.strOkForced(data['name']),
+      notes: h.strOk(data['notes']) ?? "",
       socialCircle: socialCircle,
       potentialForCircle: potentialForCircle,
     );
 
     // Can be null
-    temp.lastSocialEvent = h.dateTimeOK(data['lastSocialEvent']);
-    temp.nextSocialEvent = h.dateTimeOK(data['nextSocialEvent']);
+    temp.lastSocialEvent = h.dateTimeOk(data['lastSocialEvent']);
+    temp.nextSocialEvent = h.dateTimeOk(data['nextSocialEvent']);
 
     // Can't be null
     temp.createdAt = h.dateTimeOkForced(data['createdAt']);
@@ -117,14 +128,24 @@ class PersonModel extends Equatable {
 
     temp.isDeleted = h.boolOkForced(data['isDeleted']);
 
-    for (var element in data['tags']) {
-      temp.tags.add(PersonTag.fromJson(element));
+    temp.tags = [for (var tag in data['tags']) PersonTag.fromJson(tag)];
+
+    if (complete) {
+      temp.socialEvents = [
+        for (var event in data['socialEvents'])
+          SocialEventModel.fromJson(event).toSocialEvent()
+      ];
     }
 
     return temp;
   }
 
-  Person personFromPersonModel() {
+  // ----------------------------------------
+  // ----------------------------------------
+  // ----------------------------------------
+  // ----------------------------------------
+
+  Person toPerson() {
     Person temp = Person(
       id: id,
       name: name,
@@ -146,7 +167,7 @@ class PersonModel extends Equatable {
     return temp;
   }
 
-  static PersonModel personModelFromPerson(Person person) {
+  static PersonModel fromPerson(Person person) {
     PersonModel temp = PersonModel(
       id: person.id,
       name: person.name,

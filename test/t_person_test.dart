@@ -14,62 +14,100 @@ void main() {
 
     late Person returned;
 
+    // int count = 0;
+
     _checkEquality(bool expectVal) {
       expect(returned == test, expectVal);
+      // if (!expectVal) print(++count);
     }
 
     _checkToAndFromPersonModel() {
-      PersonModel model = PersonModel.personModelFromPerson(test);
+      PersonModel model = PersonModel.fromPerson(test);
 
-      returned = model.personFromPersonModel();
+      // var json = model.toJson();
+      // model = PersonModel.fromJson(json, complete: true);
+
+      returned = model.toPerson();
+
+      // if (test.socialEvents.isNotEmpty) {
+      //   print(test.socialEvents);
+      //   print(returned.socialEvents);
+      // }
 
       _checkEquality(true);
     }
 
     _checkToAndFromPersonModel();
 
+    var now = DateTime.now();
+    test.lastSocialEvent = now;
+    _checkEquality(false);
+    returned.lastSocialEvent = now;
+    _checkEquality(true);
+    test.nextSocialEvent = now;
+    _checkEquality(false);
+    returned.nextSocialEvent = now;
     _checkEquality(true);
 
-    test.lastSocialEvent = test.nextSocialEvent = DateTime.now();
-
+    PersonTag tag = const PersonTag(id: 1, title: "title");
+    test.tags.add(tag);
     _checkEquality(false);
-
-    returned.lastSocialEvent = returned.nextSocialEvent = test.nextSocialEvent;
-
+    returned.tags.add(tag);
     _checkEquality(true);
-
-    _checkToAndFromPersonModel();
-
-    test.tags.add(const PersonTag(id: 1, title: "title"));
-
-    _checkEquality(false);
 
     _checkToAndFromPersonModel();
 
     test.isDeleted = true;
-
     _checkEquality(false);
+    test.isDeleted = false;
+    _checkEquality(true);
 
     _checkToAndFromPersonModel();
 
-    test.socialCircle = const SocialCircle(id: 2, title: "title");
-
+    SocialCircle socialCircle2 = const SocialCircle(id: 2, title: "title");
+    test.socialCircle = socialCircle2;
     _checkEquality(false);
+    returned.socialCircle = socialCircle2;
+    _checkEquality(true);
 
     _checkToAndFromPersonModel();
 
-    test.potentialForCircle = const SocialCircle(id: 3, title: "title");
-
+    SocialCircle potentialCircle = const SocialCircle(id: 3, title: "title");
+    test.potentialForCircle = potentialCircle;
     _checkEquality(false);
+    returned.potentialForCircle = potentialCircle;
+    _checkEquality(true);
 
     _checkToAndFromPersonModel();
 
-    test.socialEvents.add(
-      SocialEvent(id: 1, startDate: DateTime.now(), attendees: [test]),
-    );
-
+    SocialEvent event =
+        SocialEvent(id: 1, startDate: DateTime.now(), attendees: [test]);
+    test.socialEvents.add(event);
     _checkEquality(false);
+    returned.socialEvents.add(event);
+    _checkEquality(true);
 
     _checkToAndFromPersonModel();
+
+    String note = "testing note";
+    test.notes = note;
+    _checkEquality(false);
+    returned.notes = note;
+    _checkEquality(true);
+
+    _checkToAndFromPersonModel();
+
+    String newName = "testing name";
+    test.name = newName;
+    _checkEquality(false);
+    returned.name = newName;
+    _checkEquality(true);
+
+    _checkToAndFromPersonModel();
+
+    test.createdAt = test.modifiedAt = now;
+    _checkEquality(false);
+    returned.createdAt = returned.modifiedAt = now;
+    _checkEquality(true);
   });
 }

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:social_irl/domain/entities/person.dart';
-import 'package:social_irl/domain/entities/tag.dart';
 
 import '../usecases/social_event_usecases.dart';
+import 'person.dart';
+import 'tag.dart';
 
 class SocialEvent extends Equatable {
   final int id;
@@ -16,10 +16,10 @@ class SocialEvent extends Equatable {
   String notes;
   late List<SocialEventTag> tags;
 
-  bool isDeleted = false;
-
   late DateTime createdAt;
   late DateTime modifiedAt;
+
+  bool isDeleted = false;
 
   SocialEvent({
     required this.id,

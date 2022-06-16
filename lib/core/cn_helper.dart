@@ -77,7 +77,7 @@ class Helper {
     return res;
   }
 
-  DateTime? dateTimeOK(var data) {
+  DateTime? dateTimeOk(var data) {
     if (data == null) return null;
 
     return DateTime.tryParse(data);
@@ -85,7 +85,7 @@ class Helper {
 
   /// Either DateTime or error
   DateTime dateTimeOkForced(var data) {
-    var res = dateTimeOK(data);
+    var res = dateTimeOk(data);
     if (res == null) throw "'$data' cannot be parsed as DateTime";
     return res;
   }

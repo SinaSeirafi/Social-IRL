@@ -207,7 +207,7 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
     person.copyDataFromPerson(widget.person!);
 
     _nameController.text = person.name;
-    _notesController.text = person.notes ?? "";
+    _notesController.text = person.notes;
   }
 
   @override
