@@ -15,34 +15,31 @@ class SocialEventsListPage extends StatefulWidget {
 class _SocialEventsListPageState extends State<SocialEventsListPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: BlocBuilder<SocialEventBloc, SocialEventState>(
-        builder: (context, state) {
-          if (state is SocialEventLoaded) {
-            if (state.events.isEmpty) {
-              return const Center(
-                child: Text(
-                  "Add events with the button below."
-                  "\n\nMake sure to add some people first!",
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-
-            return ListView(
-              children: [
-                for (var socialEvent in state.events)
-                  SocialEventCard(socialEvent: socialEvent)
-              ],
+    return BlocBuilder<SocialEventBloc, SocialEventState>(
+      builder: (context, state) {
+        if (state is SocialEventLoaded) {
+          if (state.events.isEmpty) {
+            return const Center(
+              child: Text(
+                "Add events with the button below."
+                "\n\nMake sure to add some people first!",
+                textAlign: TextAlign.center,
+              ),
             );
           }
 
-          return const Center(
-            child: CnDottedLoadingAnimation(),
+          return ListView(
+            children: [
+              for (var socialEvent in state.events)
+                SocialEventCard(socialEvent: socialEvent)
+            ],
           );
-        },
-      ),
+        }
+
+        return const Center(
+          child: CnDottedLoadingAnimation(),
+        );
+      },
     );
   }
 }

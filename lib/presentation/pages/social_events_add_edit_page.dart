@@ -38,28 +38,25 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Container(
-        color: Colors.white,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildTitleTextField(),
-                    _buildDatePicker(),
-                    _buildNotesTextField(),
-                    _buildTitle("Attendees"),
-                    _buildNoteAttendeesSuggestions(),
-                    _buildTitle("Tags"),
-                    _buildNoteTagsSuggestions(),
-                  ],
-                ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildTitleTextField(),
+                  _buildDatePicker(),
+                  _buildNotesTextField(),
+                  _buildTitle("Attendees"),
+                  _buildNoteAttendeesSuggestions(),
+                  _buildTitle("Tags"),
+                  _buildNoteTagsSuggestions(),
+                ],
               ),
-              _buildFAB(),
-            ],
-          ),
+            ),
+            _buildFAB(),
+          ],
         ),
       ),
 

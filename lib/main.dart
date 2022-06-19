@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_irl/core/app_constants.dart';
 
 import 'core/app_router.dart';
 import 'presentation/bloc/person_bloc.dart';
@@ -14,7 +15,7 @@ void main() {
 
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      systemNavigationBarColor: Colors.white, // navigation bar color
+      systemNavigationBarColor: Colors.transparent, // navigation bar color
       statusBarColor: Colors.transparent, // status bar color
     ));
   }
@@ -41,6 +42,11 @@ class MyApp extends StatelessWidget {
         title: 'Social IRL',
         theme: ThemeData(
           primarySwatch: Colors.grey,
+          scaffoldBackgroundColor: primaryColor,
+          backgroundColor: primaryColor,
+          appBarTheme: AppBarTheme(
+            backgroundColor: primaryColor,
+          ),
         ),
         home: const SplashScreenPage(),
         onGenerateRoute: router.generator,

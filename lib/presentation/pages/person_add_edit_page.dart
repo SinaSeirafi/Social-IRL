@@ -38,27 +38,24 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
-      body: Container(
-        color: Colors.white,
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildNameTextField(),
-                    _buildNotesTextField(),
-                    _buildTitle("Circle"),
-                    _buildSocialCircle(),
-                    _buildTitle("Tags"),
-                    _buildNoteSuggestions(),
-                  ],
-                ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildNameTextField(),
+                  _buildNotesTextField(),
+                  _buildTitle("Circle"),
+                  _buildSocialCircle(),
+                  _buildTitle("Tags"),
+                  _buildNoteSuggestions(),
+                ],
               ),
-              _buildButton(),
-            ],
-          ),
+            ),
+            _buildButton(),
+          ],
         ),
       ),
     );
@@ -129,7 +126,6 @@ class _PersonAddEditPageState extends State<PersonAddEditPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.white,
       elevation: 0,
       title: Text(editMode ? person.name : "Add Person"),
     );
