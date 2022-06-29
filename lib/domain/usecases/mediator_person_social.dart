@@ -82,7 +82,8 @@ class MediatorPersonSocialEvent {
     for (SocialEvent socialEvent in person.socialEvents) {
       socialEvent.attendees.remove(person);
 
-      await _editSocialEvent(SocialEventParams(socialEvent));
+      await _editSocialEvent(
+          SocialEventParams(socialEvent, removedPeople: [person]));
     }
   }
 
