@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import '../datasources/dummyData.dart';
 
 import '../../core/failures.dart';
 import '../../domain/entities/person.dart';
@@ -12,7 +11,6 @@ class PersonRepository implements AbsPersonRepository {
 
   // final DatabaseHelper databaseHelper = DatabaseHelper();
 
-  // List<Person> personsDataList = [dummyPerson1, dummyPerson2];
   List<Person> personsDataList = [];
 
   static const int demoModeDelayInMilliSeconds = 30;

@@ -1,6 +1,25 @@
 import 'package:social_irl/domain/entities/person.dart';
 import 'package:social_irl/domain/entities/social_event.dart';
 import 'package:social_irl/domain/entities/tag.dart';
+import 'package:social_irl/domain/usecases/social_event_usecases.dart';
+
+import '../../domain/usecases/person_usecases.dart';
+
+Future generateDummyData() async {
+  AddPerson _addPerson = AddPerson();
+
+  await _addPerson(PersonParams(dummyPerson1));
+  await _addPerson(PersonParams(dummyPerson2));
+  await _addPerson(PersonParams(dummyPerson3));
+  await _addPerson(PersonParams(dummyPerson4));
+
+  AddSocialEventUsecase _addEvent = AddSocialEventUsecase();
+
+  await _addEvent(SocialEventParams(dummySocialEvent1));
+  await _addEvent(SocialEventParams(dummySocialEvent2));
+  await _addEvent(SocialEventParams(dummySocialEvent3));
+  // await _addEvent(SocialEventParams(dummySocialEvent4));
+}
 
 Person dummyPerson1 = Person(
   id: 1,
@@ -21,7 +40,7 @@ Person dummyPerson3 = Person(
 );
 
 Person dummyPerson4 = Person(
-  id: 3,
+  id: 4,
   name: "Alaleh",
   socialCircle: dummySocialCircle2,
 );
@@ -51,7 +70,24 @@ SocialEvent dummySocialEvent1 = SocialEvent(
 );
 
 SocialEvent dummySocialEvent2 = SocialEvent(
-  id: 1,
+  id: 2,
   startDate: DateTime.now(),
-  attendees: [dummyPerson1, dummyPerson2],
+  attendees: [dummyPerson2],
+);
+
+SocialEvent dummySocialEvent3 = SocialEvent(
+  id: 3,
+  startDate: DateTime.now(),
+  attendees: [dummyPerson3],
+);
+
+SocialEvent dummySocialEvent4 = SocialEvent(
+  id: 4,
+  startDate: DateTime.now(),
+  attendees: [
+    dummyPerson1,
+    dummyPerson2,
+    dummyPerson3,
+    dummyPerson4,
+  ],
 );

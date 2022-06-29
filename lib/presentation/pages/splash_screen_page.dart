@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:social_irl/data/datasources/dummyData.dart';
 
 import '../../core/app_constants.dart';
 import '../../core/app_router.dart';
@@ -60,6 +61,9 @@ class _SplashScreenPageState extends State<SplashScreenPage> {
         replace: true,
       );
     }
+
+    // FIXME: comment
+    await generateDummyData();
 
     return _navigateHome();
 

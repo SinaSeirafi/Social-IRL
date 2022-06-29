@@ -54,6 +54,15 @@ class EditPerson extends PersonUsecase<List<Person>, PersonParams> {
   }
 }
 
+/// Steps
+///
+/// 1. Set [person.isDeleted] = true
+/// 2. Mediator.handlePersonRemoved
+///   - Remove Person from Events
+///   - Remove Events from Person
+/// 3. Edit events
+///   - Update persons
+/// for the removed person,
 class RemovePerson extends PersonUsecase<List<Person>, PersonParams> {
   @override
   Future<Either<Failure, List<Person>>> call(PersonParams params) async {
