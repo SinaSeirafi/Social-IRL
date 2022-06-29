@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:social_irl/presentation/bloc/person_bloc.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -62,18 +60,6 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
     });
 
     on<RemoveSocialEventEvent>((event, emit) async {
-      // final state = this.state as SocialEventLoaded;
-
-      for (var person in event.socialEvent.attendees) {
-        // Remove event from person and call EditPerson
-        person.socialEvents.remove(event.socialEvent);
-
-        // handles its own loading, no need to await it
-        event.context.read<PersonBloc>().add(EditPersonEvent(person));
-      }
-
-      event.socialEvent.isDeleted = true;
-
       _emitLoading(emit);
 
       emit(
@@ -82,12 +68,6 @@ class SocialEventBloc extends Bloc<SocialEventEvent, SocialEventState> {
           "Delete socialEvent list error.",
         ),
       );
-    });
-
-    /// When a [Person] is removed, remove it from all of the social events
-    /// Also, if a [SocialEvent] only included that person, it should be removed as well
-    on<HandleSocialEventsInCaseOfPersonRemoved>((event, emit) async {
-      // TODO: implement event handler
     });
   }
 

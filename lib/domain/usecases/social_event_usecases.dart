@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 import '../../core/app_constants.dart';
 import '../../core/extract_data_from_notes.dart';
@@ -8,10 +7,9 @@ import '../../core/failures.dart';
 import '../../core/usecases.dart';
 import '../../data/repositories/social_event_repository.dart';
 import '../../presentation/widgets/notes_suggester.dart';
-import '../entities/person.dart';
 import '../entities/social_event.dart';
 import '../entities/tag.dart';
-import 'person_usecases.dart';
+import 'mediator_person_social.dart';
 
 abstract class SocialEventUseCase<Type, Params> {
   Future<Either<Failure, Type>> call(Params params);
@@ -21,7 +19,7 @@ class SocialEventParams extends Equatable {
   final SocialEvent socialEvent;
 
   /// People that are removed from the event while editing the event
-  final List<Person>? removedPeople;
+  final List? removedPeople;
 
   const SocialEventParams(this.socialEvent, {this.removedPeople});
 
@@ -47,10 +45,8 @@ class AddSocialEventUsecase
     params.socialEvent.createdAt =
         params.socialEvent.modifiedAt = DateTime.now();
 
-    for (var person in params.socialEvent.attendees) {
-      await PersonGeneralUsecases.addSocialEventToPerson(
-          person, params.socialEvent);
-    }
+    await MediatorPersonSocialEvent.addSocialEventToNewAttendees(
+        params.socialEvent);
 
     return await _repository.addSocialEvent(params.socialEvent);
   }
@@ -63,18 +59,20 @@ class EditSocialEventUsecase
       SocialEventParams params) async {
     params.socialEvent.modifiedAt = DateTime.now();
 
-    // In EditEventEvent removed people won't be null
-    for (var person in params.removedPeople!) {
-      await PersonGeneralUsecases.removeSocialEventFromPerson(
-          person, params.socialEvent);
+    await MediatorPersonSocialEvent.handleAttendeesAfterSocialEventEdit(
+        params.removedPeople, params.socialEvent);
+
+    // first updating the data on the social event (removing people or ...)
+    var editResult = await _repository.editSocialEvent(params.socialEvent);
+
+    // // if failed, or still has attendees, return edit result
+    if (editResult.isLeft() || params.socialEvent.attendees.isNotEmpty) {
+      return editResult;
     }
 
-    for (var person in params.socialEvent.attendees) {
-      // Add or Update
-      PersonGeneralUsecases.handleSocialEventEdit(person, params.socialEvent);
-    }
-
-    return await _repository.editSocialEvent(params.socialEvent);
+    // it doesn't have any attendees left, delete it
+    final _removeSocialEvent = RemoveSocialEventUsecase();
+    return await _removeSocialEvent(SocialEventParams(params.socialEvent));
   }
 }
 
@@ -87,10 +85,8 @@ class RemoveSocialEventUsecase
 
     params.socialEvent.isDeleted = true;
 
-    for (var person in params.socialEvent.attendees) {
-      await PersonGeneralUsecases.removeSocialEventFromPerson(
-          person, params.socialEvent);
-    }
+    await MediatorPersonSocialEvent.removeSocialEventFromPersonList(
+        params.socialEvent);
 
     return await _repository.deleteSocialEvent(params.socialEvent);
   }
@@ -123,52 +119,5 @@ class SocialEventGeneralUsecases {
       socialEvent.tags.add(tag);
       allSocialEventTags.add(tag);
     }
-  }
-
-  static String? validateEventAttendees(
-    List<Person> personsList,
-    SocialEvent socialEvent,
-    TextEditingController controller,
-  ) {
-    socialEvent.attendees = [];
-
-    List<String> attendeesString =
-        extractDataFromNotes(controller.text, attendeePattern);
-
-    if (attendeesString.isEmpty) {
-      return "So, it was a personal event? \nNot really social, is it? :D"
-          "\n\nPlease add at least one attendee \n(type @name in the notes text box)";
-    }
-
-    // Checking each entry
-    for (var item in attendeesString) {
-      item = item.replaceAll("_", " ");
-
-      if (item.isEmpty) continue;
-
-      // is .any() and .firstWhere() faster than this?
-      bool found = false;
-
-      for (var person in personsList) {
-        if (person.name.toLowerCase() == item.toLowerCase()) {
-          // FIXME: so ... what if two people have the same name? :D
-
-          /// should be much more advanced and show possible options (if multiple)
-          /// and user chooses between them
-          /// but for now it can be enough
-
-          socialEvent.attendees.add(person);
-          found = true;
-          break;
-        }
-      }
-
-      if (!found) {
-        return "Couldn't find '$item' in people"
-            "\nPlease add them first.";
-      }
-    }
-
-    return null;
   }
 }

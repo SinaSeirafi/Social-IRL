@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:social_irl/core/app_router.dart';
-import 'package:social_irl/core/cn_helper.dart';
-import 'package:social_irl/domain/entities/person.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_irl/presentation/widgets/cn_widgets/cn_button.dart';
-
-import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
 
 import '../../core/app_constants.dart';
-import '../../domain/entities/tag.dart';
+import '../../core/app_router.dart';
+import '../../domain/entities/person.dart';
 import '../bloc/person_bloc.dart';
 import 'cn_widgets/cn_message.dart';
+import 'cn_widgets/cn_text.dart';
 import 'common_widgets.dart';
 
 class PersonCard extends StatelessWidget {
@@ -85,7 +80,7 @@ class PersonCard extends StatelessWidget {
 
   Future<bool> _confirmDelete(BuildContext context) async {
     _removeQuestion() {
-      context.read<PersonBloc>().add(RemovePersonEvent(context, person));
+      context.read<PersonBloc>().add(RemovePersonEvent(person));
 
       Navigator.pop(context);
     }

@@ -102,9 +102,7 @@ class SocialEventCard extends StatelessWidget {
 
   Future<bool> _confirmDelete(BuildContext context) async {
     _removeQuestion() {
-      context
-          .read<SocialEventBloc>()
-          .add(RemoveSocialEventEvent(context, socialEvent));
+      context.read<SocialEventBloc>().add(RemoveSocialEventEvent(socialEvent));
 
       Navigator.pop(context);
     }

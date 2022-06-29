@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
-import 'package:social_irl/core/app_constants.dart';
-import 'package:social_irl/core/cn_helper.dart';
-import 'package:social_irl/data/models/person_model.dart';
-import 'package:social_irl/domain/entities/social_event.dart';
 
-import '../../domain/entities/person.dart';
+import '../../core/app_constants.dart';
+import '../../core/cn_helper.dart';
+import '../../domain/entities/social_event.dart';
 import '../../domain/entities/tag.dart';
 
 class SocialEventModel extends Equatable {

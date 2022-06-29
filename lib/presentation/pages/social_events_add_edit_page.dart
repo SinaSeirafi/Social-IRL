@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../core/app_constants.dart';
 import '../../domain/entities/person.dart';
 import '../../domain/entities/social_event.dart';
+import '../../domain/usecases/mediator_person_social.dart';
 import '../../domain/usecases/social_event_usecases.dart';
 import '../bloc/person_bloc.dart';
 import '../bloc/social_event_bloc.dart';
@@ -173,6 +174,7 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
       return;
     }
 
+    // TODO: edit mode, if all removed, confirm remove event
     if (!_validateEventAttendees()) return;
 
     // Should be handled in the validation above
@@ -215,10 +217,11 @@ class _SocialEventAddEditPageState extends State<SocialEventAddEditPage> {
     final state = context.read<PersonBloc>().state as PersonLoaded;
 
     String? _validateAttendeesErrorMessage =
-        SocialEventGeneralUsecases.validateEventAttendees(
+        MediatorPersonSocialEvent.validateEventAttendees(
       state.persons,
       socialEvent,
-      _notesController,
+      _notesController.text,
+      attendeePattern,
     );
 
     if (_validateAttendeesErrorMessage != null) {

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:social_irl/core/app_constants.dart';
+import 'package:social_irl/domain/usecases/mediator_person_social.dart';
 
 import '../../core/cn_helper.dart';
 import '../usecases/person_usecases.dart';
@@ -74,7 +75,7 @@ class Person extends Equatable {
       PersonGeneralUsecases.timeSinceLastEvent(this);
 
   void updateNextAndLastSocialEventTimes() =>
-      PersonGeneralUsecases.updateNextAndLastSocialEventTimes(this);
+      MediatorPersonSocialEvent.updateNextAndLastSocialEventTimes(this);
 }
 
 class SocialCircle extends Equatable {

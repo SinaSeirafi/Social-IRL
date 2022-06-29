@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:social_irl/core/app_constants.dart';
-import 'package:social_irl/core/cn_helper.dart';
-import 'package:social_irl/data/datasources/dummyData.dart';
-import 'package:social_irl/domain/usecases/person_usecases.dart';
-import 'package:social_irl/presentation/widgets/cn_widgets/cn_text.dart';
 
+import '../../core/app_constants.dart';
+import '../../data/datasources/dummyData.dart';
 import '../../domain/entities/person.dart';
+import '../../domain/usecases/person_usecases.dart';
 import '../bloc/person_bloc.dart';
 import '../widgets/cn_widgets/cn_button.dart';
-
+import '../widgets/cn_widgets/cn_text.dart';
 import '../widgets/cn_widgets/cn_textformfield.dart';
 import '../widgets/notes_suggester.dart';
 

@@ -33,22 +33,9 @@ class EditPersonEvent extends PersonEvent {
 }
 
 class RemovePersonEvent extends PersonEvent {
-  /// This is received in order to call [RemovePersonEvent] event on [SocialEventBloc]
-  final BuildContext context;
-
   final Person person;
 
-  const RemovePersonEvent(this.context, this.person);
-
-  @override
-  List<Object> get props => [Person];
-}
-
-class PersonEventUpdated extends PersonEvent {
-  final Person person;
-  final SocialEvent event;
-
-  const PersonEventUpdated(this.person, this.event);
+  const RemovePersonEvent(this.person);
 
   @override
   List<Object> get props => [Person];

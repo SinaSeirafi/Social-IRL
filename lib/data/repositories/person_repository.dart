@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:social_irl/data/datasources/dummyData.dart';
+import '../datasources/dummyData.dart';
 
 import '../../core/failures.dart';
 import '../../domain/entities/person.dart';
