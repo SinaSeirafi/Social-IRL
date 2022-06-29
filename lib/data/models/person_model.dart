@@ -136,10 +136,11 @@ class PersonModel extends Equatable {
     );
 
     temp.tags = [for (var tag in tags) tag];
-    temp.socialEvents = [
-      for (var eventId in socialEventsIds)
-        allSocialEvents.firstWhere((element) => element.id == eventId)
-    ];
+    temp.socialEventIds = socialEventsIds;
+    // temp.socialEvents = [
+    //   for (var eventId in socialEventsIds)
+    //     allSocialEvents.firstWhere((element) => element.id == eventId)
+    // ];
 
     temp.lastSocialEvent = lastSocialEvent;
     temp.nextSocialEvent = nextSocialEvent;
@@ -161,7 +162,8 @@ class PersonModel extends Equatable {
     );
 
     temp.tags = [for (var tag in person.tags) tag];
-    temp.socialEventsIds = [for (var event in person.socialEvents) event.id];
+    // temp.socialEventsIds = [for (var event in person.socialEvents) event.id];
+    temp.socialEventsIds = person.socialEventIds;
 
     temp.lastSocialEvent = person.lastSocialEvent;
     temp.nextSocialEvent = person.nextSocialEvent;

@@ -1,3 +1,4 @@
+import 'package:social_irl/core/app_constants.dart';
 import 'package:social_irl/domain/usecases/social_event_usecases.dart';
 
 import '../../core/extract_data_from_notes.dart';
@@ -9,6 +10,13 @@ class MediatorPersonSocialEvent {
   static final EditPerson _editPerson = EditPerson();
   static final EditSocialEventUsecase _editSocialEvent =
       EditSocialEventUsecase();
+
+  static List<SocialEvent> getSocialEventsByIds(List<int> socialEventIds) {
+    return allSocialEvents
+        .where((element) => socialEventIds.contains(element.id))
+        .toList()
+        .cast<SocialEvent>();
+  }
 
   /// Updaing [nextSocialEvent] and [lastSocialEvent] values
   ///
@@ -44,17 +52,7 @@ class MediatorPersonSocialEvent {
 
   static Future addSocialEventToPerson(
       Person person, SocialEvent socialEvent) async {
-    person.socialEvents.add(socialEvent);
-
-    await _editPerson(PersonParams(person));
-  }
-
-  static Future updatePersonSocialEvent(
-      Person person, SocialEvent socialEvent) async {
-    int index = person.socialEvents
-        .indexWhere((element) => element.id == socialEvent.id);
-
-    person.socialEvents[index] = socialEvent;
+    person.socialEventIds.add(socialEvent.id);
 
     await _editPerson(PersonParams(person));
   }
@@ -75,7 +73,7 @@ class MediatorPersonSocialEvent {
       person.nextSocialEvent = null;
     }
 
-    person.socialEvents.removeWhere((element) => element.id == socialEvent.id);
+    person.socialEventIds.removeWhere((element) => element == socialEvent.id);
 
     await _editPerson(PersonParams(person));
   }
@@ -112,15 +110,17 @@ class MediatorPersonSocialEvent {
     }
   }
 
-  /// If Person already has the event, update it
+  /// If Person already has the event, ignore it
   /// If not, add it
   static Future handlePersonSocialEventAfterEdit(
       Person person, SocialEvent socialEvent) async {
-    if (person.socialEvents.any((element) => element.id == socialEvent.id)) {
-      await updatePersonSocialEvent(person, socialEvent);
-    } else {
-      await addSocialEventToPerson(person, socialEvent);
+    // person already has the event
+    if (person.socialEventIds.any((element) => element == socialEvent.id)) {
+      // social event already updated
+      return;
     }
+
+    await addSocialEventToPerson(person, socialEvent);
   }
 
   static String? validateEventAttendees(

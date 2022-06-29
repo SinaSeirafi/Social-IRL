@@ -84,7 +84,7 @@ class PersonGeneralUsecases {
     target.potentialForCircle = source.potentialForCircle;
     target.notes = source.notes;
     target.tags = source.tags;
-    target.socialEvents = source.socialEvents;
+    target.socialEventIds = source.socialEventIds;
     target.isDeleted = source.isDeleted;
     target.createdAt = source.createdAt;
     target.modifiedAt = source.modifiedAt;

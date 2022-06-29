@@ -18,7 +18,7 @@ Future generateDummyData() async {
   await _addEvent(SocialEventParams(dummySocialEvent1));
   await _addEvent(SocialEventParams(dummySocialEvent2));
   await _addEvent(SocialEventParams(dummySocialEvent3));
-  // await _addEvent(SocialEventParams(dummySocialEvent4));
+  await _addEvent(SocialEventParams(dummySocialEvent4));
 }
 
 Person dummyPerson1 = Person(

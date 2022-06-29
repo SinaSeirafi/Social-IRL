@@ -77,9 +77,9 @@ void main() {
 
     SocialEvent event =
         SocialEvent(id: 1, startDate: DateTime.now(), attendees: [test]);
-    test.socialEvents.add(event);
+    test.socialEventIds.add(event.id);
     _checkEquality(false);
-    returned.socialEvents.add(event);
+    returned.socialEventIds.add(event.id);
     _checkEquality(true);
 
     _checkToAndFromPersonModel();

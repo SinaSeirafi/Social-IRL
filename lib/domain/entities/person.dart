@@ -20,7 +20,7 @@ class Person extends Equatable {
   String notes;
   late List<PersonTag> tags;
 
-  late List<SocialEvent> socialEvents;
+  late List<int> socialEventIds;
 
   // TODO Should we save it like this in the database? Or calculate this every time
 
@@ -44,7 +44,7 @@ class Person extends Equatable {
     this.notes = "",
   }) {
     createdAt = modifiedAt = DateTime.now();
-    socialEvents = [];
+    socialEventIds = [];
     tags = [];
 
     allPeople.add(this);
@@ -58,13 +58,16 @@ class Person extends Equatable {
         potentialForCircle,
         notes,
         tags,
-        socialEvents,
+        socialEventIds,
         lastSocialEvent,
         nextSocialEvent,
         createdAt,
         modifiedAt,
         isDeleted,
       ];
+
+  List<SocialEvent> get socialEvents =>
+      MediatorPersonSocialEvent.getSocialEventsByIds(socialEventIds);
 
   String get nameAndCircleEmoji => name + " " + socialCircle.title;
 
